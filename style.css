@@ -100,6 +100,7 @@ nav a:hover {
   margin: 0 auto;
   max-width: 900px;
   padding: 20px;
+  min-height: 85vh;
 }
 
 /* Service container */
@@ -108,12 +109,42 @@ nav a:hover {
   flex-direction: row;
   align-items: stretch;
   background: rgba(0, 0, 0, var(--opacity-light));
-  border: var(--border-secondary);
   border-radius: var(--radius-main);
   box-shadow: var(--shadow-main);
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
+  position: relative;
+  flex: 1;
+}
+
+/* Border gradient effect using pseudo-element */
+.service::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-main);
+  padding: 2px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.service.basic::before {
+  background: linear-gradient(90deg, #A05003, #DC5004, #FF8040);
+}
+
+.service.complete::before {
+  background: linear-gradient(90deg, #720000, #A20101, #D40202);
+}
+
+.service.luxe::before {
+  background: linear-gradient(90deg, #4A0066, #68009B, #8B00CF);
+}
+
+.service.add-ons::before {
+  background: linear-gradient(90deg, #00A8B8, #00E4F5, #40EAFF);
 }
 
 /* Hover effect */
@@ -142,17 +173,21 @@ nav a:hover {
   z-index: 1;
 }
 
-/* Tier colors for names */
+/* Tier colors with gradients for names */
 .service.basic .service-name {
-  background-color: #DC5004;
+  background: linear-gradient(90deg, #A05003, #DC5004);
 }
 
 .service.complete .service-name {
-  background-color: #A20101;
+  background: linear-gradient(90deg, #720000, #A20101);
 }
 
 .service.luxe .service-name {
-  background-color: #68009B;
+  background: linear-gradient(90deg, #4A0066, #68009B);
+}
+
+.service.add-ons .service-name {
+  background: linear-gradient(90deg, #00A8B8, #00E4F5);
 }
 
 /* Service description - dark background, takes most space */
@@ -168,6 +203,27 @@ nav a:hover {
 .service-description p {
   margin: 0;
   line-height: 1.6;
+}
+
+/* Add-ons specific styling */
+.service-description.addons-list {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 15px;
+}
+
+.addon-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.addon-item:hover {
+  background: rgba(0, 228, 245, 0.2);
+  transform: var(--hover-lift);
 }
 
 /* Service price - high contrast */
@@ -202,42 +258,6 @@ nav a:hover {
   }
 }
 
-
-/* ==========================================
-   ADD-ONS
-   ========================================== */
-.add-ons {
-  display: flex;
-  flex-direction: column;
-  background: rgba(0, 0, 0, var(--opacity-light));
-  border: var(--border-secondary);
-  border-radius: var(--radius-main);
-  box-shadow: var(--shadow-main);
-  padding: 20px;
-  width: 280px;
-  color: var(--color-text);
-  height: fit-content;
-}
-
-.add-ons h3 {
-  text-align: center;
-  margin-bottom: 15px;
-  color: var(--color-secondary);
-}
-
-.addon-item {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-}
-
-.addon-item:hover {
-  background: rgba(0, 228, 245, 0.2);
-  transform: var(--hover-lift);
-}
 
 /* ==========================================
    GALLERY CAROUSEL
