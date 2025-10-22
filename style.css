@@ -26,7 +26,7 @@
   --shadow-blue: 0 0 8px rgba(0, 228, 245, 0.3);
   --shadow-purple: 0 0 8px rgba(104, 0, 155, 0.3);
   --shadow-orange: 0 0 8px rgba(220, 80, 4, 0.3);
-  --shadow-hover: 0 0 15px rgba(0, 228, 245, 0.6);
+  --shadow-hover: 0 0 15px rgba(255, 255, 255, 0.8);
   --shadow-red-hover: 0 0 15px rgba(161, 1, 1, 0.6);
   --shadow-blue-hover: 0 0 8px rgba(0, 228, 245, 0.3);
   --shadow-purple-hover: 0 0 15px rgba(104, 0, 155, 0.6);
@@ -99,6 +99,18 @@ nav a:hover {
 }
 
 /* ==========================================
+   INTRO SECTION
+   ========================================== */
+.intro-section {
+  max-width: 900px;
+  margin: 40px auto 20px;
+  padding: 0 20px;
+  text-align: center;
+  color: var(--color-text);
+  font-size: 1.1rem;
+}
+
+/* ==========================================
    SERVICE SECTIONS
    ========================================== */
 #services {
@@ -108,7 +120,6 @@ nav a:hover {
   margin: 0 auto;
   max-width: 900px;
   padding: 20px;
-  min-height: 85vh;
 }
 
 /* Service container */
@@ -116,7 +127,7 @@ nav a:hover {
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  background: rgba(0, 0, 0, var(--opacity-light));
+  background: rgba(0, 0, 0, var(--opacity-medium));
   border-radius: var(--radius-main);
   box-shadow: var(--shadow-main);
   overflow: hidden;
@@ -126,38 +137,8 @@ nav a:hover {
   flex: 1;
 }
 
-/* Border gradient effect using pseudo-element */
-.service::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-main);
-  padding: 2px;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-.service.basic::before {
-  background: linear-gradient(90deg, #A05003, #DC5004, #FF8040);
-  box-shadow: var(--shadow-orange-hover);
-}
-
-.service.complete::before {
-  background: linear-gradient(90deg, #720000, #A20101, #D40202);
-  box-shadow: var(--shadow-red-hover);
-}
-
-.service.luxe::before {
-  background: linear-gradient(90deg, #4A0066, #68009B, #8B00CF);
-  box-shadow: var(--shadow-purple-hover);
-}
-
-.service.add-ons::before {
-  background: linear-gradient(90deg, #00A8B8, #00E4F5, #40EAFF);
-  box-shadow: var(--shadow-blue-hover);
-
+.service:not(.add-ons) {
+  min-height: calc((100vh - 120px) / 4 * 0.85 - 15px);
 }
 
 /* Hover effect */
@@ -165,23 +146,18 @@ nav a:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-hover);
 }
-.service.basic:hover {
-}
-.service.complete:hover {
-}
-.service.luxe:hover {
-}
 
 /* Service name - arrow/pentagon shape */
 .service-name {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  min-width: 120px;
+  min-width: 140px;
   color: #fff;
   font-weight: bold;
-  clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%);
+  clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%);
   position: relative;
 }
 
@@ -190,6 +166,15 @@ nav a:hover {
   font-size: 1.2rem;
   text-align: center;
   z-index: 1;
+}
+
+.addon-subtext {
+  font-size: 0.65rem;
+  font-weight: normal;
+  text-align: center;
+  margin-top: 8px;
+  opacity: 0.9;
+  line-height: 1.2;
 }
 
 /* Tier colors with gradients for names */
@@ -212,37 +197,157 @@ nav a:hover {
 /* Service description - dark background, takes most space */
 .service-description {
   flex: 1;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 20px;
+  padding: 20px 30px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   color: var(--color-text);
+  position: relative;
 }
 
-.service-description p {
+.service-description ul {
+  list-style: none;
   margin: 0;
-  line-height: 1.6;
+}
+
+.service-description li {
+  padding: 1px 0;
+  padding-left: 20px;
+  position: relative;
+}
+
+.service-description li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-secondary);
+  font-size: 1.2rem;
+}
+
+/* Tier badges */
+.tier-badge {
+  position: absolute;
+  top: 10px;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
+  color: #fff;
+  padding: 6px 15px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-left {
+  left: 15px;
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 8px 100%, 0 50%);
+  clip-path: polygon(0 0, 85% 0%, 100% 50%, 85% 100%, 0 100%, 15% 50%);
+  padding-left: 20px;
+}
+
+.badge-right {
+  right: 15px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+  padding-right: 20px;
 }
 
 /* Add-ons specific styling */
 .service-description.addons-list {
   flex-direction: column;
   align-items: stretch;
-  gap: 10px;
-  padding: 15px;
+  gap: 12px;
+  padding: 20px;
+}
+
+.addon-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
 .addon-item {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  padding: 10px;
+  padding: 12px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
 }
 
 .addon-item:hover {
   background: rgba(0, 228, 245, 0.2);
   transform: var(--hover-lift);
+  box-shadow: var(--shadow-hover);
+}
+
+.info-icon {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--color-text);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.info-icon:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Info Tooltip */
+.info-tooltip {
+  position: fixed;
+  background: rgba(20, 20, 20, 0.98);
+  border: 2px solid var(--color-secondary);
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 300px;
+  z-index: 2000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  display: none;
+}
+
+.info-tooltip.active {
+  display: block;
+}
+
+.close-tooltip {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.close-tooltip:hover {
+  color: var(--color-secondary);
+}
+
+.tooltip-content {
+  margin: 0;
+  color: var(--color-text);
+  line-height: 1.6;
 }
 
 /* Service price - high contrast */
@@ -265,6 +370,7 @@ nav a:hover {
 @media screen and (max-width: 768px) {
   .service {
     flex-direction: column;
+    min-height: auto;
   }
 
   .service-name {
@@ -274,6 +380,10 @@ nav a:hover {
 
   .service-price {
     min-width: unset;
+  }
+
+  .addon-row {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -378,11 +488,12 @@ nav a:hover {
   z-index: 999;
   text-decoration: none;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  transition: background 0.2s;
+  transition: background 0.2s, box-shadow 0.2s;
 }
 
 .sticky-cta:hover {
   background: var(--color-accent-light);
+  box-shadow: var(--shadow-hover);
 }
 
 /* ==========================================
