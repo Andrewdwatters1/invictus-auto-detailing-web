@@ -22,7 +22,15 @@
   --border-secondary: 2px solid var(--color-secondary);
   --radius-main: 12px;
   --shadow-main: 0 0 8px rgba(255, 255, 255, 0.3);
-  --shadow-hover: 0 0 14px rgba(0, 228, 245, 0.6);
+  --shadow-red: 0 0 8px rgba(161, 1, 1, 0.3);
+  --shadow-blue: 0 0 8px rgba(0, 228, 245, 0.3);
+  --shadow-purple: 0 0 8px rgba(104, 0, 155, 0.3);
+  --shadow-orange: 0 0 8px rgba(220, 80, 4, 0.3);
+  --shadow-hover: 0 0 15px rgba(0, 228, 245, 0.6);
+  --shadow-red-hover: 0 0 15px rgba(161, 1, 1, 0.6);
+  --shadow-blue-hover: 0 0 8px rgba(0, 228, 245, 0.3);
+  --shadow-purple-hover: 0 0 15px rgba(104, 0, 155, 0.6);
+  --shadow-orange-hover: 0 0 15px rgba(220, 80, 4, 0.6);
 
   /* Hover & Opacity */
   --hover-brighten: rgba(0, 0, 0, 0.7);
@@ -133,24 +141,35 @@ nav a:hover {
 
 .service.basic::before {
   background: linear-gradient(90deg, #A05003, #DC5004, #FF8040);
+  box-shadow: var(--shadow-orange-hover);
 }
 
 .service.complete::before {
   background: linear-gradient(90deg, #720000, #A20101, #D40202);
+  box-shadow: var(--shadow-red-hover);
 }
 
 .service.luxe::before {
   background: linear-gradient(90deg, #4A0066, #68009B, #8B00CF);
+  box-shadow: var(--shadow-purple-hover);
 }
 
 .service.add-ons::before {
   background: linear-gradient(90deg, #00A8B8, #00E4F5, #40EAFF);
+  box-shadow: var(--shadow-blue-hover);
+
 }
 
 /* Hover effect */
 .service:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-hover);
+}
+.service.basic:hover {
+}
+.service.complete:hover {
+}
+.service.luxe:hover {
 }
 
 /* Service name - arrow/pentagon shape */
