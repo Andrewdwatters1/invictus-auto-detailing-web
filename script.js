@@ -29,7 +29,7 @@ setInterval(() => {
 }, 5000);
 
 // Smooth scrolling for header nav links
-document.querySelectorAll('header nav a').forEach(link => {
+document.querySelectorAll('header nav a.scroller').forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
     const target = document.querySelector(link.getAttribute('href'));
