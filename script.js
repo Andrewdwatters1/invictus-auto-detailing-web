@@ -43,3 +43,17 @@ setInterval(() => {
   carouselIndex = (carouselIndex + 1) % carouselItems.length;
   updateCarousel();
 }, 5000);
+
+
+// ***
+// ***
+const infoBtns = document.querySelectorAll('i.fa-solid.fa-circle-info');
+const tooltip = document.querySelector('#info-tooltip');
+const tooltipClose = document.querySelector('button.close-tooltip');
+[...infoBtns, tooltipClose].forEach((item, idx) => {
+  item.addEventListener('click', e => {
+    tooltip.classList.toggle('active');
+    console.log(tooltip);
+    console.log(Object.values(e.target.dataset)[0])
+  })
+})
