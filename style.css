@@ -408,20 +408,19 @@ nav a:hover {
    GALLERY CAROUSEL
    ========================================== */
 .carousel-container {
-  width: 75%;
-  max-width: 900px;
+  width: 80vw;
   margin: 0 auto;
   overflow: hidden;
   position: relative;
-  height: 580px;
+  height: 500px;
 }
 
 .carousel-track {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  height: 500px;
+  /* left: 50%; */
+  /* top: 50%; */
+  /* transform: translate(-50%, -50%); */
+  height: 100%;
   transition: transform 0.5s ease-in-out;
   white-space: nowrap;
 }
@@ -429,7 +428,7 @@ nav a:hover {
 .carousel-item {
   display: inline-block;
   position: relative;
-  height: 500px;
+  height: 100%;
   width: auto;
   margin: 0 10px;
   transition: filter 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
@@ -450,16 +449,16 @@ nav a:hover {
 }
 
 .carousel-image {
-  height: 500px;
+  height: 100%;
   width: auto;
-  max-width: 100%;
+  /* max-width: 100%; */
   object-fit: cover;
   border-radius: 8px;
   transition: box-shadow 0.5s ease;
   display: block;
 }
 
-.carousel-item:not(.blur-side) .carousel-image {
+/* .carousel-item:not(.blur-side) .carousel-image {
   box-shadow:
     0 0 30px rgba(0, 228, 245, 0.6),
     0 0 60px rgba(0, 228, 245, 0.4),
@@ -469,7 +468,7 @@ nav a:hover {
 
 .carousel-item.blur-side .carousel-image {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
+} */
 
 /* Placeholder colored squares */
 .placeholder-square {
