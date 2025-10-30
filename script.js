@@ -4,11 +4,9 @@ var carouselItems = document.querySelectorAll('.carousel-item');
 let carouselIndex = -1;
 
 window.addEventListener('load', () => {
-  // updateCarousel();
   updateBlur()
   setInterval(moveCarousel, 3000)
 })
-
 
 
 const moveCarousel = () => {
