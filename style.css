@@ -26,11 +26,11 @@
   --shadow-blue: 0 0 8px rgba(0, 228, 245, 0.3);
   --shadow-purple: 0 0 8px rgba(104, 0, 155, 0.3);
   --shadow-orange: 0 0 8px rgba(220, 80, 4, 0.3);
-  --shadow-hover: 0 0 15px rgba(255, 255, 255, 0.8);
-  --shadow-red-hover: 0 0 15px rgba(161, 1, 1, 0.6);
+  --shadow-hover: 0 0 12px rgba(255, 255, 255, 0.8);
+  --shadow-red-hover: 0 0 12px rgba(161, 1, 1, 0.8);
   --shadow-blue-hover: 0 0 8px rgba(0, 228, 245, 0.3);
-  --shadow-purple-hover: 0 0 15px rgba(104, 0, 155, 0.6);
-  --shadow-orange-hover: 0 0 15px rgba(220, 80, 4, 0.6);
+  --shadow-purple-hover: 0 0 12px rgba(104, 0, 155, 0.8);
+  --shadow-orange-hover: 0 0 12px rgba(220, 80, 4, 0.8);
 
   /* Hover & Opacity */
   --hover-brighten: rgba(0, 0, 0, 0.7);
@@ -150,6 +150,15 @@ nav a:hover {
   box-shadow: var(--shadow-hover);
 }
 
+.service.basic:hover {
+  box-shadow: var(--shadow-orange-hover)
+}
+.service.complete:hover {
+  box-shadow: var(--shadow-red-hover)
+}
+.service.luxe:hover {
+  box-shadow: var(--shadow-purple-hover)
+}
 /* Service name - arrow/pentagon shape */
 .service-name {
   display: flex;
