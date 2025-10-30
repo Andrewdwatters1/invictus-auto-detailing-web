@@ -1,37 +1,57 @@
 // ===== Gallery Carousel with Blur Effect =====
 const carouselTrack = document.querySelector('.carousel-track');
-const carouselItems = document.querySelectorAll('.carousel-item');
-let carouselIndex = 0;
+var carouselItems = document.querySelectorAll('.carousel-item');
+let carouselIndex = -1;
 
-const updateCarousel = () => {
+window.addEventListener('load', () => {
+  // updateCarousel();
+  updateBlur()
+  setInterval(moveCarousel, 3000)
+})
 
-  carouselIndex++;
 
-  // Calculate cumulative offset to center current item
-  let offset = 0;
 
-  for (let i = 0; i < carouselIndex; i++) {
-    const itemWidth = carouselItems[i].offsetWidth;
-    const halfOfNext = carouselItems[i + 1].offsetWidth / 2;
-    offset += itemWidth + halfOfNext;
-  }
+const moveCarousel = () => {
+  const firstItem = carouselTrack.children[0];
+  const itemWidth = firstItem.getBoundingClientRect().width;
 
-  carouselTrack.scroll({
-    top: 0,
-    left: offset,
-    behavior: "smooth",
+  // Apply smooth scroll transition
+  carouselTrack.style.transition = 'transform 1s ease-in-out';
+  carouselTrack.style.transform = `translateX(-${itemWidth}px)`;
+
+  // After transition, recycle the first item
+  carouselTrack.addEventListener('transitionend', function handler() {
+    carouselTrack.style.transition = 'none'; // disable animation for instant move
+    carouselTrack.style.transform = 'translateX(0)'; // reset position
+
+    // Move first item to end
+    carouselTrack.appendChild(firstItem);
+
+    // Rebuild carouselItems array (since DOM order changed)
+    carouselItems = Array.from(carouselTrack.children);
+
+    // Update the blur effect
+    updateBlur();
+
+    // Re-enable transition for next move
+    void carouselTrack.offsetWidth; // force reflow
+    carouselTrack.style.transition = 'transform 1s ease-in-out';
+
+    // Clean up event listener
+    carouselTrack.removeEventListener('transitionend', handler);
   });
+};
 
-  // Apply blur to non-center slides
+const updateBlur = () => {
+  // The "center" item is always index 0 after reset (visually first in line)
   carouselItems.forEach((item, index) => {
-    if (index === carouselIndex) {
+    if (index === 0) {
       item.classList.remove('blur-side');
     } else {
       item.classList.add('blur-side');
     }
   });
 };
-
 
 // ***
 // ***
