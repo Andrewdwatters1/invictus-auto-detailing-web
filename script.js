@@ -52,14 +52,81 @@ const updateBlur = () => {
 };
 
 // ***
-// ***
+// Info tooltip functionality
+const tooltip = document.getElementById('info-tooltip');
+const tooltipText = tooltip.querySelector('.tooltip-text');
+
+const tooltipContent = {
+  odor: 'Deep Odor Treatment lorem ipsum',
+  pet: 'Pet Hair Treatment lorem ipsum',
+  intensive: 'Intensive Care lorem ipsum',
+  headlights: 'Headlight Restoration lorem ipsum',
+  'both-lights': 'Headlight/Taillight Restoration lorem ipsum'
+};
+
+const showTooltip = (iconElement, service) => {
+  const rect = iconElement.getBoundingClientRect();
+  tooltipText.textContent = tooltipContent[service];
+
+  // Position below the icon
+  tooltip.style.left = rect.left + (rect.width / 2) + 'px';
+  tooltip.style.top = rect.bottom + 8 + 'px';
+  tooltip.style.transform = 'translateX(-50%)';
+
+  tooltip.classList.add('visible');
+};
+
+const hideTooltip = () => {
+  tooltip.classList.remove('visible');
+};
+
+// Desktop: hover behavior
 const infoBtns = document.querySelectorAll('i.fa-solid.fa-circle-info');
-const tooltip = document.querySelector('#info-tooltip');
-const tooltipClose = document.querySelector('button.close-tooltip');
-[...infoBtns, tooltipClose].forEach((item, idx) => {
-  item.addEventListener('click', e => {
-    tooltip.classList.toggle('active');
-    console.log(tooltip);
-    console.log(Object.values(e.target.dataset)[0])
-  })
-})
+infoBtns.forEach(icon => {
+  icon.addEventListener('mouseenter', (e) => {
+    const service = e.target.dataset.service;
+    showTooltip(icon, service);
+  });
+
+  icon.addEventListener('mouseleave', () => {
+    hideTooltip();
+  });
+
+  // Mobile: tap behavior
+  icon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const service = e.target.dataset.service;
+
+    if (tooltip.classList.contains('visible')) {
+      hideTooltip();
+    } else {
+      showTooltip(icon, service);
+    }
+  });
+});
+
+// Close tooltip when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.fa-circle-info')) {
+    hideTooltip();
+  }
+});
+
+// Smooth scroll for navigation links
+document.querySelectorAll('a.scroller').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const targetId = link.getAttribute('href');
+    const targetSection = document.querySelector(targetId);
+
+    if (targetSection) {
+      const headerHeight = 110;
+      const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
+  });
+});

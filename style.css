@@ -7,10 +7,12 @@
   --color-secondary: #00E4F5;     /* Electric Blue */
   --color-accent: #68009B;        /* Indigo */
   --color-accent-light: #9554B7;  /* Lighter Indigo */
+  --color-orange: #A05003;
   --color-bg-dark: #000;
   --color-bg-medium: #2C2C2C;
   --color-text: #fff;
   --color-muted: #ddd;
+  --white-background: #f5f5f5;
 
   /* Header & Background */
   --header-bg: rgba(100, 100, 100, 0.4);
@@ -21,23 +23,28 @@
   --border-main: 2px solid var(--color-primary);
   --border-secondary: 2px solid var(--color-secondary);
   --radius-main: 12px;
-  --shadow-main: 0 0 8px rgba(255, 255, 255, 0.3);
+  --shadow-main: 0 0 8px rgba(0, 0, 0, 0.8);
   --shadow-red: 0 0 8px rgba(161, 1, 1, 0.3);
   --shadow-blue: 0 0 8px rgba(0, 228, 245, 0.3);
   --shadow-purple: 0 0 8px rgba(104, 0, 155, 0.3);
   --shadow-orange: 0 0 8px rgba(220, 80, 4, 0.3);
   --shadow-hover: 0 0 12px rgba(255, 255, 255, 0.8);
-  --shadow-red-hover: 0 0 12px rgba(161, 1, 1, 0.8);
-  --shadow-blue-hover: 0 0 8px rgba(0, 228, 245, 0.3);
-  --shadow-purple-hover: 0 0 12px rgba(104, 0, 155, 0.8);
-  --shadow-orange-hover: 0 0 12px rgba(220, 80, 4, 0.8);
+  --shadow-red-hover: 0 0 12px rgba(161, 1, 1, 0.95);
+  --shadow-blue-hover: 0 0 8px rgba(0, 228, 245, 0.7);
+  --shadow-purple-hover: 0 0 12px rgba(104, 0, 155, 0.95);
+  --shadow-orange-hover: 0 0 12px rgba(220, 80, 4, 0.95);
 
   /* Hover & Opacity */
   --hover-brighten: rgba(0, 0, 0, 0.7);
   --hover-lift: translateY(-2px);
   --opacity-strong: 0.95;
-  --opacity-medium: 0.7;
-  --opacity-light: 0.55;
+  --opacity-medium: 0.65;
+  --opacity-light: 0.5;
+
+  /* Speed and transition timing */
+  --timing-fast: 0.2s;
+  --timing-med: 0.4s;
+  --timing-slow: 0.7s;
 }
 
 /* ==========================================
@@ -83,19 +90,56 @@ header {
   opacity: var(--header-opacity);
 }
 
-nav {
-  display: flex;
-  align-items: flex-end;
-}
-
+/* Option 5: Bracket Focus */
 nav a {
-  color: var(--color-text);
-  margin: 0 10px;
-  transition: color 0.3s;
+  position: relative;
+  padding: 6px 12px;
+  transition: all 0.3s ease;
+  color: var(--color-text)
 }
 
-nav a:hover {
-  color: var(--color-secondary);
+nav a::before,
+nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background: var(--color-secondary);
+  transition: width 0.3s ease;
+}
+
+nav a::before {
+  top: 0;
+  left: 0;
+}
+
+nav a::after {
+  bottom: 0;
+  right: 0;
+}
+
+nav a:hover::before,
+nav a:hover::after {
+  width: 100%;
+}
+
+nav a[target="_blank"] {
+  background: linear-gradient(135deg, #A20101, #68009B);
+  padding: 12px 28px;
+  border-radius: 6px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+nav a[target="_blank"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(162, 1, 1, 0.5), 0 0 30px rgba(104, 0, 155, 0.3);
+}
+
+nav a[target="_blank"]::before,
+nav a[target="_blank"]::after {
+  display: none;
 }
 
 /* ==========================================
@@ -131,23 +175,29 @@ nav a:hover {
   flex-direction: row;
   align-items: stretch;
   background: rgba(0, 0, 0, var(--opacity-medium));
-  border-radius: var(--radius-main);
   box-shadow: var(--shadow-main);
+  border-radius: var(--radius-main);
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
+  transition:
+    transform var(--timing-fast) ease,
+    box-shadow var(--timing-fast) ease;
   position: relative;
   flex: 1;
 }
 
 .service:not(.add-ons) {
   min-height: calc((100vh - 120px) / 4 * 0.85 - 15px);
+  cursor: pointer;
 }
 
-/* Hover effect */
-.service:hover {
-  transform: translateY(-5px);
+.service:not(.add-ons):hover {
   box-shadow: var(--shadow-hover);
+  background: rgba(0, 0, 0, var(--opacity-strong));
+  transform: translateY(-5px);
+}
+
+.service.add-ons {
+  flex-direction: column;
 }
 
 .service.basic:hover {
@@ -165,13 +215,24 @@ nav a:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 10px;
   min-width: 140px;
   color: #fff;
   text-shadow: 1px 1px rgba(0, 0, 0, .7);
   font-weight: bold;
-  clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%);
   position: relative;
+}
+
+.service:not(.add-ons) .service-name {
+  clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%);
+  padding: 20px;
+}
+
+.service.add-ons .service-name {
+  background: linear-gradient(90deg, #3a3a3a, #5a5a5a, #6a6a6a);
+  background: linear-gradient(90deg, #2a2a2a, #4a4a4a);
+  background: linear-gradient(90deg, #555555, #787878);
+
 }
 
 .service-name h3 {
@@ -183,19 +244,12 @@ nav a:hover {
   text-
 }
 
-.subtext {
+.subtext-large {
   font-weight: normal;
   text-align: center;
   margin-top: 8px;
   line-height: 1.2;
-}
-
-.subtext.large {
   font-size: 0.85rem;
-}
-
-.subtext.small {
-  font-size: 0.65rem;
 }
 
 /* Tier colors with gradients for names */
@@ -283,14 +337,21 @@ nav a:hover {
   padding: 20px;
 }
 
-.addon-row {
+.addon-row-3 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
 }
 
+/* .addon-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+} */
+
 .addon-item {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--white-background);
+  color: black;
   border-radius: 8px;
   padding: 12px;
   cursor: pointer;
@@ -302,12 +363,12 @@ nav a:hover {
 }
 
 .addon-item:hover {
-  background: rgba(0, 228, 245, 0.2);
+  /* background: rgba(222, 222, 222, var(--opacity-light)); */
   transform: var(--hover-lift);
   box-shadow: var(--shadow-hover);
 }
 
-.info-icon {
+/* .info-icon {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: var(--color-text);
@@ -327,56 +388,44 @@ nav a:hover {
 .info-icon:hover {
   background: rgba(255, 255, 255, 0.3);
   box-shadow: var(--shadow-hover);
-}
+} */
 
 /* Info Tooltip */
+/* Info Tooltip */
 .info-tooltip {
-  position: absolute;
+  position: fixed;
   background: rgba(20, 20, 20, 0.98);
-  border: 2px solid var(--color-secondary);
-  border-radius: 8px;
-  padding: 20px;
-  max-width: 300px;
-  z-index: 2000;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  display: none;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  max-width: 250px;
+  z-index: 3000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-.info-tooltip.active {
-  display: block;
+.info-tooltip.visible {
+  opacity: 1;
 }
 
-.close-tooltip {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: transparent;
-  border: none;
-  color: var(--color-text);
-  font-size: 1.2rem;
-  cursor: pointer;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
-}
-
-.close-tooltip:hover {
-  color: var(--color-secondary);
-}
-
-.tooltip-content {
+.info-tooltip .tooltip-text {
   margin: 0;
-  color: var(--color-text);
-  line-height: 1.6;
 }
+
+.fa-circle-info {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
 
 /* Service price - high contrast with soft psychological pricing */
 .service-price {
   min-width: 100px;
-  background-color: #f5f5f5;
+  background-color: var(--white-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -584,12 +633,16 @@ nav a:hover {
   z-index: 999;
   text-decoration: none;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  transition: background 0.2s, box-shadow 0.2s;
+  transition:
+    transform var(--timing-fast) ease,
+    box-shadow var(--timing-fast) ease;
+
 }
 
 .sticky-cta:hover {
-  background: var(--color-accent-light);
+  /* background: var(--color-accent-light); */
   box-shadow: var(--shadow-hover);
+  transform: var(--hover-lift);
 }
 
 
