@@ -130,3 +130,30 @@ document.querySelectorAll('a.scroller').forEach(link => {
     }
   });
 });
+
+
+
+// Package selection for CTA button
+const packages = document.querySelectorAll('.service:not(.add-ons)');
+const ctaButton = document.querySelector('.sticky-cta');
+
+packages.forEach(pkg => {
+  pkg.addEventListener('click', (e) => {
+    // Remove previous selections
+    packages.forEach(p => p.classList.remove('selected'));
+
+    // Add selected class to clicked package
+    pkg.classList.add('selected');
+
+    // Update CTA button style based on package
+    ctaButton.classList.remove('selected-basic', 'selected-complete', 'selected-luxe');
+
+    if (pkg.classList.contains('basic')) {
+      ctaButton.classList.add('selected-basic');
+    } else if (pkg.classList.contains('complete')) {
+      ctaButton.classList.add('selected-complete');
+    } else if (pkg.classList.contains('luxe')) {
+      ctaButton.classList.add('selected-luxe');
+    }
+  });
+});
