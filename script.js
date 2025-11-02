@@ -1,65 +1,132 @@
-// ===== Review Widget =====
-const reviewSlides = [...document.querySelectorAll('.review-slide')];
-let reviewIndex = 0;
+// ===== Gallery Carousel with Blur Effect =====
+const carouselTrack = document.querySelector('.carousel-track');
+var carouselItems = document.querySelectorAll('.carousel-item');
+let carouselIndex = -1;
 
-const updateReviews = () => {
-  reviewSlides.forEach(slide => {
-    slide.style.transform = `translateX(-${reviewIndex * 100}%)`;
+window.addEventListener('load', () => {
+  updateBlur()
+  setInterval(moveCarousel, 3000)
+})
+
+
+const moveCarousel = () => {
+  const firstItem = carouselTrack.children[0];
+  const itemWidth = firstItem.getBoundingClientRect().width;
+
+  // Apply smooth scroll transition
+  carouselTrack.style.transition = 'transform 1s ease-in-out';
+  carouselTrack.style.transform = `translateX(-${itemWidth}px)`;
+
+  // After transition, recycle the first item
+  carouselTrack.addEventListener('transitionend', function handler() {
+    carouselTrack.style.transition = 'none'; // disable animation for instant move
+    carouselTrack.style.transform = 'translateX(0)'; // reset position
+
+    // Move first item to end
+    carouselTrack.appendChild(firstItem);
+
+    // Rebuild carouselItems array (since DOM order changed)
+    carouselItems = Array.from(carouselTrack.children);
+
+    // Update the blur effect
+    updateBlur();
+
+    // Re-enable transition for next move
+    void carouselTrack.offsetWidth; // force reflow
+    carouselTrack.style.transition = 'transform 1s ease-in-out';
+
+    // Clean up event listener
+    carouselTrack.removeEventListener('transitionend', handler);
   });
 };
 
-// Auto-rotate reviews every 5 seconds
-setInterval(() => {
-  reviewIndex = (reviewIndex + 1) % reviewSlides.length;
-  updateReviews();
-}, 5000);
+const updateBlur = () => {
+  // The "center" item is always index 0 after reset (visually first in line)
+  carouselItems.forEach((item, index) => {
+    if (index === 0) {
+      item.classList.remove('blur-side');
+    } else {
+      item.classList.add('blur-side');
+    }
+  });
+};
 
-// Smooth scrolling for header nav links
-document.querySelectorAll('header nav a').forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-    const target = document.querySelector(link.getAttribute('href'));
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+// ***
+// Info tooltip functionality
+const tooltip = document.getElementById('info-tooltip');
+const tooltipText = tooltip.querySelector('.tooltip-text');
+
+const tooltipContent = {
+  odor: 'Deep Odor Treatment lorem ipsum',
+  pet: 'Pet Hair Treatment lorem ipsum',
+  intensive: 'Intensive Care lorem ipsum',
+  headlights: 'Headlight Restoration lorem ipsum',
+  'both-lights': 'Headlight/Taillight Restoration lorem ipsum'
+};
+
+const showTooltip = (iconElement, service) => {
+  const rect = iconElement.getBoundingClientRect();
+  tooltipText.textContent = tooltipContent[service];
+
+  // Position below the icon
+  tooltip.style.left = rect.left + (rect.width / 2) + 'px';
+  tooltip.style.top = rect.bottom + 8 + 'px';
+  tooltip.style.transform = 'translateX(-50%)';
+
+  tooltip.classList.add('visible');
+};
+
+const hideTooltip = () => {
+  tooltip.classList.remove('visible');
+};
+
+// Desktop: hover behavior
+const infoBtns = document.querySelectorAll('i.fa-solid.fa-circle-info');
+infoBtns.forEach(icon => {
+  icon.addEventListener('mouseenter', (e) => {
+    const service = e.target.dataset.service;
+    showTooltip(icon, service);
+  });
+
+  icon.addEventListener('mouseleave', () => {
+    hideTooltip();
+  });
+
+  // Mobile: tap behavior
+  icon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const service = e.target.dataset.service;
+
+    if (tooltip.classList.contains('visible')) {
+      hideTooltip();
+    } else {
+      showTooltip(icon, service);
+    }
   });
 });
 
-// ===============================
-// Continuous Fade Slider
-// ===============================
-const topImage = document.querySelector('.fade-image img.top');
-
-let fadeIn = true;
-
-setInterval(() => {
-  if (fadeIn) {
-    topImage.style.opacity = 100;
-  } else {
-    topImage.style.opacity = 0;
+// Close tooltip when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.fa-circle-info')) {
+    hideTooltip();
   }
-  fadeIn = !fadeIn;
-}, 4000); // 2s per transition
-
-document.querySelectorAll('.service').forEach(service => {
-  service.addEventListener('click', () => {
-    const name = service.querySelector('h3').textContent;
-    const price = service.querySelector('strong').textContent;
-    console.log(`Added ${name} (${price}) to cart`);
-    // Here you could trigger a modal, toast, or add to actual cart data structure
-  });
 });
 
-const toast = document.getElementById('toast');
+// Smooth scroll for navigation links
+document.querySelectorAll('a.scroller').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const targetId = link.getAttribute('href');
+    const targetSection = document.querySelector(targetId);
 
-function showToast(message) {
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
-}
+    if (targetSection) {
+      const headerHeight = 110;
+      const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight;
 
-document.querySelectorAll('.service, .addon-item').forEach(item => {
-  item.addEventListener('click', () => {
-    const name = item.querySelector('h3')?.textContent || item.dataset.name;
-    const price = item.querySelector('strong')?.textContent || item.dataset.price;
-    showToast(`Added ${name} (${price}) to cart ✅`);
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
   });
 });
