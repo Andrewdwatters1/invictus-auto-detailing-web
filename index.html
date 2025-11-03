@@ -1,18 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <script>
-  console.log(window.innerWidth);
-    if (window.innerWidth < 768) {
-      // User is on mobile → redirect
-      window.location.href = "mobile/mobile.html";
-    } else {
-      // Desktop → stay or redirect elsewhere
-      window.location.href = "desktop/desktop.html";
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invictus Auto Detailing</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
     }
-  </script>
+  </style>
 </head>
+<body>
+  <div id="loading">Redirecting...</div>
+  <script>
+    // Wait for DOM to be ready
+    window.addEventListener('DOMContentLoaded', function() {
+      // Use multiple detection methods
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+      const isMobileWidth = window.innerWidth <= 768;
+      const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
-<body></body>
+      const isMobile = isMobileUA || (isMobileWidth && isTouchDevice);
 
+      console.log('User Agent Mobile:', isMobileUA);
+      console.log('Width:', window.innerWidth);
+      console.log('Touch Device:', isTouchDevice);
+      console.log('Redirecting to:', isMobile ? 'mobile' : 'desktop');
+
+      if (isMobile) {
+        window.location.replace("mobile/mobile.html");
+      } else {
+        window.location.replace("desktop/desktop.html");
+      }
+    });
+  </script>
+</body>
 </html>
