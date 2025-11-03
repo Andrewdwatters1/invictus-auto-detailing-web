@@ -40,7 +40,6 @@ function startCarouselInfiniteScroll(carouselTrack, speed = 160) {
   function createIndicator() {
     indicator = document.createElement('div');
     indicator.className = 'carousel-indicator';
-    // indicator.textContent = '⏸️';
     indicator.innerHTML = pauseIndicator;
     document.querySelector('.carousel-container').appendChild(indicator);
   }
@@ -97,6 +96,10 @@ function startCarouselInfiniteScroll(carouselTrack, speed = 160) {
 function startReviewsCarousel() {
   const reviewWidget = document.querySelector('.review-widget');
   const reviewSlides = document.querySelectorAll('.review-slide');
+  if (!reviewWidget || !reviewSlides) {
+    return;
+  }
+  
   let currentReview = 0;
   const reviewInterval = 5000; // 5 seconds
 
