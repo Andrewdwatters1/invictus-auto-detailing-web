@@ -1,8 +1,31 @@
+const packages = document.querySelectorAll('.service:not(.add-ons)');
+const addonItems = document.querySelectorAll('.addon-item');
+const ctaButton = document.querySelector('.sticky-cta');
+const tooltip = document.getElementById('info-tooltip');
+const tooltipText = tooltip.querySelector('.tooltip-text');
+const infoBtns = document.querySelectorAll('i.fa-solid.fa-circle-info');
+const carouselTrack = document.getElementById('carousel-track');
+const navLinks = document.querySelectorAll('a.scroller');
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-  const carouselTrack = document.getElementById('carousel-track');
   startCarouselInfiniteScroll(carouselTrack, 160); // pixels per second
+  startReviewsCarousel();
 });
+
+// Cart management
+const cart = {
+  package: null, // 'basic', 'complete', or 'luxe'
+  addons: new Set() // Set of addon service names
+};
+
+const tooltipContent = { // TODO
+  odor: 'Deep Odor Treatment description',
+  pet: 'Pet Hair Treatment description',
+  intensive: 'Intensive Care description',
+  headlights: 'Headlight Restoration description',
+  'both-lights': 'Headlight/Taillight Restoration description'
+};
 
 function startCarouselInfiniteScroll(carouselTrack, speed = 160) {
   let currentX = 0;
@@ -71,22 +94,30 @@ function startCarouselInfiniteScroll(carouselTrack, speed = 160) {
   requestAnimationFrame(step);
 }
 
-const packages = document.querySelectorAll('.service:not(.add-ons)');
-const addonItems = document.querySelectorAll('.addon-item');
-const ctaButton = document.querySelector('.sticky-cta');
-const tooltip = document.getElementById('info-tooltip');
-const tooltipText = tooltip.querySelector('.tooltip-text');
-const infoBtns = document.querySelectorAll('i.fa-solid.fa-circle-info');
+function startReviewsCarousel() {
+  const reviewWidget = document.querySelector('.review-widget');
+  const reviewSlides = document.querySelectorAll('.review-slide');
+  let currentReview = 0;
+  const reviewInterval = 5000; // 5 seconds
 
-const tooltipContent = { // TODO
-  odor: 'Deep Odor Treatment lorem ipsum',
-  pet: 'Pet Hair Treatment lorem ipsum',
-  intensive: 'Intensive Care lorem ipsum',
-  headlights: 'Headlight Restoration lorem ipsum',
-  'both-lights': 'Headlight/Taillight Restoration lorem ipsum'
-};
+  function scrollToReview(index) {
+    const offset = -index * 100;
+    reviewWidget.style.transform = `translateX(${offset}%)`;
+  }
 
-const showTooltip = (iconElement, service) => {
+  function nextReview() {
+    currentReview = (currentReview + 1) % reviewSlides.length;
+    scrollToReview(currentReview);
+  }
+
+  // Auto-advance every 5 seconds
+  setInterval(nextReview, reviewInterval);
+
+  // Initialize
+  scrollToReview(0);
+}
+
+function showTooltip(iconElement, service) {
   const rect = iconElement.getBoundingClientRect();
   tooltipText.textContent = tooltipContent[service];
 
@@ -98,9 +129,28 @@ const showTooltip = (iconElement, service) => {
   tooltip.classList.add('visible');
 };
 
-const hideTooltip = () => {
+function hideTooltip() {
   tooltip.classList.remove('visible');
 };
+
+// Smooth scroll for navigation links
+navLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const targetId = link.getAttribute('href');
+    const targetSection = document.querySelector(targetId);
+
+    if (targetSection) {
+      const headerHeight = 125;
+      const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
+  });
+});
 
 // Desktop: hover behavior
 infoBtns.forEach(icon => {
@@ -125,38 +175,6 @@ infoBtns.forEach(icon => {
     }
   });
 });
-
-// Close tooltip when clicking outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.fa-circle-info')) {
-    hideTooltip();
-  }
-});
-
-// Smooth scroll for navigation links
-document.querySelectorAll('a.scroller').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const targetId = link.getAttribute('href');
-    const targetSection = document.querySelector(targetId);
-
-    if (targetSection) {
-      const headerHeight = 125;
-      const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-    }
-  });
-});
-
-// Cart management
-const cart = {
-  package: null, // 'basic', 'complete', or 'luxe'
-  addons: new Set() // Set of addon service names
-};
 
 // Package selection for CTA button
 packages.forEach(pkg => {
@@ -232,21 +250,56 @@ addonItems.forEach(addon => {
   });
 });
 
+// Close tooltip when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.fa-circle-info')) {
+    hideTooltip();
+  }
+});
+
 // Checkout function - accessible from console
-window.checkout = function() {
+function checkout() {
+
   const selections = {
     package: cart.package,
     addons: Array.from(cart.addons)
   };
 
-  console.log('Cart Contents:', selections);
+  // console.log('Cart Contents:', selections);
+  // 
+  // // Return formatted string
+  // const packageName = cart.package ? cart.package.charAt(0).toUpperCase() + cart.package.slice(1) : 'None';
+  // const addonNames = selections.addons.length > 0 ? selections.addons.join(', ') : 'None';
+  //
+  // console.log(`Package: ${packageName}`);
+  // console.log(`Add-ons: ${addonNames}`);
 
-  // Return formatted string
-  const packageName = cart.package ? cart.package.charAt(0).toUpperCase() + cart.package.slice(1) : 'None';
-  const addonNames = selections.addons.length > 0 ? selections.addons.join(', ') : 'None';
+  const redirectMap = {
+    default: 'https://form.jotform.com/ventureinvictus/detail-intake-form',
+    basic: 'https://form.jotform.com/252885754777175/prefill/6907e43a6630306492fa85154c7b',
+    complete: 'https://form.jotform.com/252885754777175/prefill/6907e504663030691fb23fb27c1a',
+    luxe: 'https://form.jotform.com/252885754777175/prefill/6907e523616339f110ed07a8ef0a'
+  }
 
-  console.log(`Package: ${packageName}`);
-  console.log(`Add-ons: ${addonNames}`);
+  let target = redirectMap.default;
 
-  return selections;
-};
+  if(cart.addons.size === 0) {
+    if(cart.package === 'basic') {
+      target = redirectMap.basic;
+    } else if (cart.package === 'complete') {
+      target = redirectMap.complete;
+    } else if (cart.package === 'luxe') {
+      target = redirectMap.luxe;
+    }
+  } else {
+    // do stuff
+  }
+
+  window.location.assign(target);
+  return;
+}
+
+// https://form.jotform.com/ventureinvictus/detail-intake-form
+// Basic - https://form.jotform.com/252885754777175/prefill/6907e43a6630306492fa85154c7b
+// Complete - https://form.jotform.com/252885754777175/prefill/6907e504663030691fb23fb27c1a
+// Luxe - https://form.jotform.com/252885754777175/prefill/6907e523616339f110ed07a8ef0a
