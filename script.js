@@ -1,62 +1,84 @@
-// ===== Gallery Carousel with Blur Effect =====
-const carouselTrack = document.querySelector('.carousel-track');
-var carouselItems = document.querySelectorAll('.carousel-item');
-let carouselIndex = -1;
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const carouselTrack = document.getElementById('carousel-track');
+  startCarouselInfiniteScroll(carouselTrack, 160); // pixels per second
+});
 
-window.addEventListener('load', () => {
-  updateBlur()
-  setInterval(moveCarousel, 3000)
-})
+function startCarouselInfiniteScroll(carouselTrack, speed = 160) {
+  let currentX = 0;
+  let lastTimestamp = null;
+  let paused = false;
+  let indicator = null;
 
+  const pauseIndicator = '<i class="fa-solid fa-pause"></i>';
+  const playIndicator = '<i class="fa-solid fa-play"></i>'
 
-const moveCarousel = () => {
-  const firstItem = carouselTrack.children[0];
-  const itemWidth = firstItem.getBoundingClientRect().width;
+  // Create indicator element
+  function createIndicator() {
+    indicator = document.createElement('div');
+    indicator.className = 'carousel-indicator';
+    // indicator.textContent = '⏸️';
+    indicator.innerHTML = pauseIndicator;
+    document.querySelector('.carousel-container').appendChild(indicator);
+  }
 
-  // Apply smooth scroll transition
-  carouselTrack.style.transition = 'transform 1s ease-in-out';
-  carouselTrack.style.transform = `translateX(-${itemWidth}px)`;
+  function showIndicator(symbol) {
+    indicator.classList.add('show');
+    clearTimeout(indicator._hideTimeout);
+    indicator._hideTimeout = setTimeout(() => {
+      indicator.innerHTML = symbol;
+    }, 300);
+    indicator._hideTimeout = setTimeout(() => {
+      indicator.classList.remove('show');
+    }, 300);
 
-  // After transition, recycle the first item
-  carouselTrack.addEventListener('transitionend', function handler() {
-    carouselTrack.style.transition = 'none'; // disable animation for instant move
-    carouselTrack.style.transform = 'translateX(0)'; // reset position
+  }
 
-    // Move first item to end
-    carouselTrack.appendChild(firstItem);
+  function step(timestamp) {
+    if (!lastTimestamp) lastTimestamp = timestamp;
+    const delta = (timestamp - lastTimestamp) / 1000;
+    lastTimestamp = timestamp;
 
-    // Rebuild carouselItems array (since DOM order changed)
-    carouselItems = Array.from(carouselTrack.children);
+    if (!paused) {
+      currentX -= speed * delta;
 
-    // Update the blur effect
-    updateBlur();
+      const firstItem = carouselTrack.children[0];
+      const itemRect = firstItem.getBoundingClientRect();
+      const style = getComputedStyle(firstItem);
+      const marginRight = parseFloat(style.marginRight) || 0;
+      const totalWidth = itemRect.width + marginRight;
 
-    // Re-enable transition for next move
-    void carouselTrack.offsetWidth; // force reflow
-    carouselTrack.style.transition = 'transform 1s ease-in-out';
+      if (Math.abs(currentX) >= totalWidth) {
+        currentX += totalWidth;
+        carouselTrack.appendChild(firstItem);
+      }
 
-    // Clean up event listener
-    carouselTrack.removeEventListener('transitionend', handler);
-  });
-};
-
-const updateBlur = () => {
-  // The "center" item is always index 0 after reset (visually first in line)
-  carouselItems.forEach((item, index) => {
-    if (index === 0) {
-      item.classList.remove('blur-side');
-    } else {
-      item.classList.add('blur-side');
+      carouselTrack.style.transform = `translateX(${currentX}px)`;
     }
-  });
-};
 
-// ***
-// Info tooltip functionality
+    requestAnimationFrame(step);
+  }
+
+  // Toggle pause/play when clicking the track
+  carouselTrack.addEventListener('click', () => {
+    paused = !paused;
+    showIndicator(paused ? playIndicator : pauseIndicator);
+  });
+
+  // Initialize
+  createIndicator();
+  carouselTrack.style.transform = 'translateX(0)';
+  requestAnimationFrame(step);
+}
+
+const packages = document.querySelectorAll('.service:not(.add-ons)');
+const addonItems = document.querySelectorAll('.addon-item');
+const ctaButton = document.querySelector('.sticky-cta');
 const tooltip = document.getElementById('info-tooltip');
 const tooltipText = tooltip.querySelector('.tooltip-text');
+const infoBtns = document.querySelectorAll('i.fa-solid.fa-circle-info');
 
-const tooltipContent = {
+const tooltipContent = { // TODO
   odor: 'Deep Odor Treatment lorem ipsum',
   pet: 'Pet Hair Treatment lorem ipsum',
   intensive: 'Intensive Care lorem ipsum',
@@ -81,7 +103,6 @@ const hideTooltip = () => {
 };
 
 // Desktop: hover behavior
-const infoBtns = document.querySelectorAll('i.fa-solid.fa-circle-info');
 infoBtns.forEach(icon => {
   icon.addEventListener('mouseenter', (e) => {
     const service = e.target.dataset.service;
@@ -92,7 +113,7 @@ infoBtns.forEach(icon => {
     hideTooltip();
   });
 
-  // Mobile: tap behavior
+  // Mobile: tap behavior - stop propagation so it doesn't trigger addon selection
   icon.addEventListener('click', (e) => {
     e.stopPropagation();
     const service = e.target.dataset.service;
@@ -120,7 +141,7 @@ document.querySelectorAll('a.scroller').forEach(link => {
     const targetSection = document.querySelector(targetId);
 
     if (targetSection) {
-      const headerHeight = 110;
+      const headerHeight = 125;
       const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight;
 
       window.scrollTo({
@@ -131,29 +152,92 @@ document.querySelectorAll('a.scroller').forEach(link => {
   });
 });
 
-
+// Cart management
+const cart = {
+  package: null, // 'basic', 'complete', or 'luxe'
+  addons: new Set() // Set of addon service names
+};
 
 // Package selection for CTA button
-const packages = document.querySelectorAll('.service:not(.add-ons)');
-const ctaButton = document.querySelector('.sticky-cta');
-
 packages.forEach(pkg => {
   pkg.addEventListener('click', (e) => {
-    // Remove previous selections
-    packages.forEach(p => p.classList.remove('selected'));
 
-    // Add selected class to clicked package
-    pkg.classList.add('selected');
+    if (pkg.classList.contains('selected')) {
+      pkg.classList.remove('selected');
+      addonItems.forEach(item => {
+        item.classList.remove(`package-${pkg.classList[1]}`)
+      })
+      cart.package = null;
+      ctaButton.classList.remove('selected-basic', 'selected-complete', 'selected-luxe');
+      
+    } else {
+      packages.forEach(p => p.classList.remove('selected'));
+      pkg.classList.add('selected');
+      addonItems.forEach(item => {
+        item.classList.add(`package-${pkg.classList[1]}`)
+      })
+      if (pkg.classList.contains('basic')) {
+        cart.package = 'basic';
+        ctaButton.classList.remove('selected-complete', 'selected-luxe');
+        ctaButton.classList.add('selected-basic');
+      } else if (pkg.classList.contains('complete')) {
+        cart.package = 'complete';
+        ctaButton.classList.remove('selected-basic', 'selected-luxe');
+        ctaButton.classList.add('selected-complete');
+      } else if (pkg.classList.contains('luxe')) {
+        cart.package = 'luxe';
+        ctaButton.classList.remove('selected-basic', 'selected-complete');
+        ctaButton.classList.add('selected-luxe');
+      }
+    }
 
-    // Update CTA button style based on package
-    ctaButton.classList.remove('selected-basic', 'selected-complete', 'selected-luxe');
 
-    if (pkg.classList.contains('basic')) {
-      ctaButton.classList.add('selected-basic');
-    } else if (pkg.classList.contains('complete')) {
-      ctaButton.classList.add('selected-complete');
-    } else if (pkg.classList.contains('luxe')) {
-      ctaButton.classList.add('selected-luxe');
+
+
+    // Update cart with package selection
+
+    console.log(ctaButton.classList);
+
+  });
+});
+
+// Addon selection
+addonItems.forEach(addon => {
+  addon.addEventListener('click', (e) => {
+    // Don't trigger if clicking the info icon
+    if (e.target.classList.contains('fa-circle-info')) {
+      return;
+    }
+
+    const service = addon.querySelector('.fa-circle-info').dataset.service;
+
+    // Toggle selection
+    addon.classList.toggle('selected');
+
+    // Update cart
+    if (addon.classList.contains('selected')) {
+      cart.addons.add(service);
+    } else {
+      cart.addons.delete(service);
     }
   });
 });
+
+// Checkout function - accessible from console
+window.checkout = function() {
+  const selections = {
+    package: cart.package,
+    addons: Array.from(cart.addons)
+  };
+
+  console.log('Cart Contents:', selections);
+
+  // Return formatted string
+  const packageName = cart.package ? cart.package.charAt(0).toUpperCase() + cart.package.slice(1) : 'None';
+  const addonNames = selections.addons.length > 0 ? selections.addons.join(', ') : 'None';
+
+  console.log(`Package: ${packageName}`);
+  console.log(`Add-ons: ${addonNames}`);
+
+  return selections;
+};
