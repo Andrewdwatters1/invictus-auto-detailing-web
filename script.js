@@ -163,27 +163,36 @@ packages.forEach(pkg => {
   pkg.addEventListener('click', (e) => {
 
     if (pkg.classList.contains('selected')) {
-      pkg.classList.remove('selected');
+
       addonItems.forEach(item => {
-        item.classList.remove(`package-${pkg.classList[1]}`)
+        item.classList.toggle(`package-${pkg.classList[1]}`)
       })
+
+      pkg.classList.remove('selected');
+
       cart.package = null;
       ctaButton.classList.remove('selected-basic', 'selected-complete', 'selected-luxe');
-      
+
     } else {
-      packages.forEach(p => p.classList.remove('selected'));
-      pkg.classList.add('selected');
+
       addonItems.forEach(item => {
+        item.classList.remove('package-basic', 'package-complete', 'package-luxe')
         item.classList.add(`package-${pkg.classList[1]}`)
       })
+
+      packages.forEach(p => p.classList.remove('selected'));
+      pkg.classList.add('selected');
+
       if (pkg.classList.contains('basic')) {
         cart.package = 'basic';
         ctaButton.classList.remove('selected-complete', 'selected-luxe');
         ctaButton.classList.add('selected-basic');
+
       } else if (pkg.classList.contains('complete')) {
         cart.package = 'complete';
         ctaButton.classList.remove('selected-basic', 'selected-luxe');
         ctaButton.classList.add('selected-complete');
+
       } else if (pkg.classList.contains('luxe')) {
         cart.package = 'luxe';
         ctaButton.classList.remove('selected-basic', 'selected-complete');

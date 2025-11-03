@@ -45,6 +45,10 @@ body {
   background: linear-gradient(
     to bottom,
     var(--black),
+    /* var(--black), */
+    /* var(--dark-grey), */
+    /* var(--dark-grey), */
+    /* var(--dark-grey), */
     var(--dark-grey),
     var(--dark-grey),
     var(--indigo)
@@ -227,7 +231,7 @@ nav a:hover::after {
 
 .service.luxe.selected {
   background:
-    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)) padding-box,
+    linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)) padding-box,
     linear-gradient(90deg, var(--black), var(--indigo-dark), var(--black)) border-box;
   box-shadow: 0 0 30px rgba(104, 0, 155, 0.6);
   background-size: 200% 100%;
@@ -238,7 +242,7 @@ nav a:hover::after {
   --package-accent: var(--orange);
 }
 .package-complete {
-  --package-accent: var(--red);
+  --package-accent: var(--dark-red);
 }
 .package-luxe {
   --package-accent: var(--indigo-light);
@@ -409,7 +413,7 @@ transition: all 0.2s ease;
 
 /* Style 3 */
 .addon-item.selected {
-  background-color: transparent;
+  background-color: var(--black);
   color: white;
   border: 3px solid var(--package-accent);
   box-shadow: 0 0 10px var(--package-accent) inset;
@@ -507,14 +511,52 @@ transition: all 0.2s ease;
    font-family: 'Arial', sans-serif;
  }
 
- .sticky-cta.selected-basic {
-   /* TODO update me */
- }
- .sticky-cta.selected-complete {
-   /* TODO update me */
- }
+
+ .sticky-cta.selected-basic,
+ .sticky-cta.selected-complete,
  .sticky-cta.selected-luxe {
-   /* TODO update me */
+   border: 3px solid transparent;
+   color: var(--text-color);
+   animation: slideGradient 1s ease; /* CTA button animate for all pkgs */
+ }
+
+ .sticky-cta.selected-basic {
+   background:
+     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)) padding-box,
+     linear-gradient(90deg, var(--black), var(--orange), var(--black)) border-box;
+   background-size: 200% 100%;
+ }
+
+ .sticky-cta.selected-basic:hover {
+   box-shadow:
+     var(--shadow-orange),
+     0 0 3px white inset;
+ }
+
+ .sticky-cta.selected-complete {
+   background:
+     linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)) padding-box,
+     linear-gradient(90deg, var(--black), var(--red), var(--black)) border-box;
+   background-size: 200% 100%;
+ }
+
+ .sticky-cta.selected-complete:hover {
+   box-shadow:
+     var(--shadow-red),
+     0 0 3px white inset;
+ }
+
+ .sticky-cta.selected-luxe {
+   background:
+     linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)) padding-box,
+     linear-gradient(90deg, var(--black), var(--indigo), var(--black)) border-box;
+   background-size: 200% 100%;
+ }
+
+ .sticky-cta.selected-luxe:hover {
+   box-shadow:
+    var(--shadow-indigo),
+    0 0 3px white inset;
  }
 
 
