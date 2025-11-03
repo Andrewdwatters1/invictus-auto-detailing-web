@@ -3,7 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invictus Auto Detailing</title>
+  <title>Invictus Auto Detailing | Colorado Springs Mobile Detailing</title>
+  <meta name="description" content="Invictus Auto Detailing provides professional mobile interior car detailing in Colorado Springs. Stain removal, pet hair, odor treatment. Book now!">
+
+  <!-- Canonical to prevent duplicate content -->
+  <link rel="canonical" href="https://invictusautodetailing.com/mobile/mobile.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Invictus Auto Detailing | Colorado Springs">
+  <meta property="og:description" content="Mobile interior auto detailing. Deep clean carpets, seats, leather. Stain, odor, pet hair removal.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://invictusautodetailing.com">
+  <meta property="og:image" content="https://invictusautodetailing.com/images/hero.jpg">
+
+  <!-- Preload critical resources -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
   <style>
     body {
       margin: 0;
@@ -15,14 +30,22 @@
       justify-content: center;
       min-height: 100vh;
     }
+    .loading {
+      text-align: center;
+    }
+    .loading::after {
+      content: '...';
+      animation: dots 1.5s infinite;
+    }
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
   </style>
-</head>
-<body>
-  <div id="loading">Redirecting...</div>
+
   <script>
-    // Wait for DOM to be ready
-    window.addEventListener('DOMContentLoaded', function() {
-      // Use multiple detection methods
+    (function() {
       const userAgent = navigator.userAgent.toLowerCase();
       const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
       const isMobileWidth = window.innerWidth <= 768;
@@ -30,17 +53,20 @@
 
       const isMobile = isMobileUA || (isMobileWidth && isTouchDevice);
 
-      console.log('User Agent Mobile:', isMobileUA);
-      console.log('Width:', window.innerWidth);
-      console.log('Touch Device:', isTouchDevice);
-      console.log('Redirecting to:', isMobile ? 'mobile' : 'desktop');
-
+      // Use replace() so back button works properly
       if (isMobile) {
         window.location.replace("mobile/mobile.html");
       } else {
         window.location.replace("desktop/desktop.html");
       }
-    });
+    })();
   </script>
+</head>
+<body>
+  <div class="loading">Redirecting</div>
+  <noscript>
+    <p>Please enable JavaScript or choose your version:</p>
+    <p><a href="mobile/mobile.html">Mobile Site</a> | <a href="desktop/desktop.html">Desktop Site</a></p>
+  </noscript>
 </body>
 </html>
