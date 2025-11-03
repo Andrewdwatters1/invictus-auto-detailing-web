@@ -694,56 +694,53 @@ transition: all 0.2s ease;
 footer.footer {
   background-color: #111;
   color: white;
-  padding: 30px 40px;
+  padding: 20px;
   font-family: var(--font-soft);
-}
-
-.footer-top {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  gap: 40px;
-  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: flex-end;
 }
 
-.footer-left {
+.footer .info {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: center;
+  align-items: center;
 }
 
-.footer-left h2 {
+.footer .last {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-grow: .4;
+}
+
+.footer h2 {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
   text-align: left;
 }
 
-.footer-left p {
+.footer p {
   font-size: 1rem;
   margin: 0;
   color: #ccc;
-}
-
-.footer-right {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
 }
 
 .social-link {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: white;
+  color: var(--color-text);
   text-decoration: none;
   font-size: 0.95rem;
   transition: all 0.3s ease;
   padding: 8px 12px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4a4a4a, #6a6a6a);
+
+
 }
 
 .social-link i {
@@ -753,13 +750,9 @@ footer.footer {
 }
 
 .social-link:hover {
-  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 5px white inset;
   transform: translateX(5px);
-  color: #00b4d8;
-}
-
-.social-link:hover i {
-  transform: scale(1.15);
+  color: var(--blue);
 }
 
 /* Mobile responsive */

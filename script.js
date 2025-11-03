@@ -265,15 +265,6 @@ function checkout() {
     addons: Array.from(cart.addons)
   };
 
-  // console.log('Cart Contents:', selections);
-  // 
-  // // Return formatted string
-  // const packageName = cart.package ? cart.package.charAt(0).toUpperCase() + cart.package.slice(1) : 'None';
-  // const addonNames = selections.addons.length > 0 ? selections.addons.join(', ') : 'None';
-  //
-  // console.log(`Package: ${packageName}`);
-  // console.log(`Add-ons: ${addonNames}`);
-
   const redirectMap = {
     default: 'https://form.jotform.com/ventureinvictus/detail-intake-form',
     basic: 'https://form.jotform.com/252885754777175/prefill/6907e43a6630306492fa85154c7b',
@@ -283,7 +274,7 @@ function checkout() {
 
   let target = redirectMap.default;
 
-  if(cart.addons.size === 0) {
+  // if(cart.addons.size === 0) {
     if(cart.package === 'basic') {
       target = redirectMap.basic;
     } else if (cart.package === 'complete') {
@@ -291,15 +282,10 @@ function checkout() {
     } else if (cart.package === 'luxe') {
       target = redirectMap.luxe;
     }
-  } else {
+  // } else {
     // do stuff
-  }
+  // }
 
   window.location.assign(target);
   return;
 }
-
-// https://form.jotform.com/ventureinvictus/detail-intake-form
-// Basic - https://form.jotform.com/252885754777175/prefill/6907e43a6630306492fa85154c7b
-// Complete - https://form.jotform.com/252885754777175/prefill/6907e504663030691fb23fb27c1a
-// Luxe - https://form.jotform.com/252885754777175/prefill/6907e523616339f110ed07a8ef0a
