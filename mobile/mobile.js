@@ -50,7 +50,7 @@ if (hamburger) {
 navLinks.forEach(link => {
   link.addEventListener('click', (e) => {
     e.preventDefault();
-    closeMenu();
+    setTimeout(closeMenu, 500);
 
     const targetId = link.getAttribute('href');
     const targetSection = document.querySelector(targetId);

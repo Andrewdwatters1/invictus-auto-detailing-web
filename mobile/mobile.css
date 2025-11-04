@@ -153,7 +153,7 @@ header h1 {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  transition: right 0.4s ease;
+  transition: right 0.3s ease;
   box-shadow: -0.5rem 0 2rem rgba(0, 0, 0, 0.5);
 }
 
@@ -263,6 +263,16 @@ header h1 {
   overflow: hidden;
   box-shadow: var(--shadow-main);
   transition: all 0.3s ease;
+}
+
+.service-card.basic {
+  box-shadow: var(--shadow-orange);
+}
+.service-card.complete {
+  box-shadow: var(--shadow-red);
+}
+.service-card.luxe {
+  box-shadow: var(--shadow-purple);
 }
 
 .service-card.selected {
@@ -723,7 +733,6 @@ footer.footer {
   font-size: 0.9375rem;
   transition: all 0.3s ease;
   min-height: var(--min-touch);
-  font-family: var(--font-system);
 }
 
 .social-link i {
