@@ -237,7 +237,7 @@ document.addEventListener('click', (e) => {
 // ==========================================
 // CAROUSEL
 // ==========================================
-function startCarouselInfiniteScroll(track, speed = 160) {
+function startCarouselInfiniteScroll(track, speed = 50) {
   if (!track) return;
 
   let currentX = 0;
