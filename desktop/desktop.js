@@ -1,3 +1,9 @@
+// ENABLE/DISABLE FEATURES
+let cartEnabled = false;
+let reviewsEnabled = false;
+let beforeExitModalEnabled = false;
+
+// DOM Nodes
 const packages = document.querySelectorAll('.service:not(.add-ons)');
 const addonItems = document.querySelectorAll('.addon-item');
 const ctaButton = document.querySelector('.sticky-cta');
@@ -7,130 +13,87 @@ const infoBtns = document.querySelectorAll('i.fa-solid.fa-circle-info');
 const carouselTrack = document.getElementById('carousel-track');
 const navLinks = document.querySelectorAll('a.scroller');
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-  startCarouselInfiniteScroll(carouselTrack, 120); // pixels per second
-  startReviewsCarousel();
-  activateExitIntent('#customExitModal');
-});
-
-// ==========================================
-// EXIT INTENT MODAL - Complete Setup
-// ==========================================
-function activateExitIntent(modalSelector) {
-  const modal = document.querySelector(modalSelector);
-
-  if (!modal) {
-    console.warn(`Modal with selector "${modalSelector}" not found`);
-    return;
-  }
-
-  const closeBtn = modal.querySelector('.exit-modal-close');
-  const declineBtn = modal.querySelector('.exit-modal-decline');
-  const ctaBtn = modal.querySelector('.exit-modal-cta');
-
-  let popupHasShown = false;
-  let triggerTime = null;
-
-  // Check if already shown this session
-  if (sessionStorage.getItem('exitModalShown')) {
-    popupHasShown = true;
-  }
-
-  // Show modal function
-  const showModal = () => {
-    if (!popupHasShown) {
-      modal.classList.add('show');
-      document.body.classList.add('modal-open');
-      popupHasShown = true;
-      sessionStorage.setItem('exitModalShown', 'true');
-    }
-  };
-
-  // Hide modal function
-  const hideModal = () => {
-    modal.classList.remove('show');
-    document.body.classList.remove('modal-open');
-  };
-
-  // --- Desktop Detection: Mouse leaving the top of the viewport ---
-  document.addEventListener('mouseleave', function(e) {
-    triggerTime = Date.now();
-  });
-
-  document.addEventListener('mouseout', function(e) {
-    const isLeaving = (Date.now() - triggerTime) > 10 && !e.toElement && !e.relatedTarget;
-    if (isLeaving && !popupHasShown && e.clientY < 50) {
-      showModal();
-    }
-  });
-
-  // --- Mobile Detection: Back button ---
-  window.addEventListener('popstate', () => {
-    if (!popupHasShown) {
-      showModal();
-      // Push state back so modal can be closed
-      window.history.pushState(null, '', window.location.href);
-    }
-  });
-
-  // --- Close Modal Event Handlers ---
-
-  // Close button
-  if (closeBtn) {
-    closeBtn.addEventListener('click', hideModal);
-  }
-
-  // Decline button
-  if (declineBtn) {
-    declineBtn.addEventListener('click', hideModal);
-  }
-
-  // CTA button (calls checkout, then closes)
-  if (ctaBtn) {
-    ctaBtn.addEventListener('click', () => {
-      hideModal();
-      // checkout() is called via onclick in HTML
-    });
-  }
-
-  // Close when clicking outside modal content
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      hideModal();
-    }
-  });
-
-  // Close with Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('show')) {
-      hideModal();
-    }
-  });
-}
-
-// --- Usage Example ---
-
-// 1. Add your modal HTML and CSS (initially hidden, e.g., display: none;)
-// 2. Call the function with your modal's selector when the DOM is ready
-
-document.addEventListener('DOMContentLoaded', () => {
-    activateExitIntent('#myCustomExitModal');
-});
-
-
-// Cart management
-const cart = {
-  package: null, // 'basic', 'complete', or 'luxe'
-  addons: new Set() // Set of addon service names
-};
-
 const tooltipContent = {
   odor: 'Professional ozone treatment and deep cleaning to eliminate stubborn odors from smoke, pets, mildew, and more.',
   pet: 'Specialized tools and techniques to remove embedded pet hair from all surfaces, including hard-to-reach areas.',
   intensive: 'Additional time and attention for heavily soiled vehicles requiring extra care and multiple passes.'
 };
 
+// Cart State
+const cart = {
+  package: null, // 'basic', 'complete', or 'luxe'
+  addons: new Set() // Set of addon service names
+};
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  setupNavLinkSmoothScroll();
+  setupPackageSelectionBehavior();
+  setupAddonSelectionBehavior();
+  setupInfoTooltips();
+
+  startCarouselInfiniteScroll(carouselTrack, 120); // pixels per second
+
+  if (reviewsEnabled) startReviewsCarousel();
+  if (beforeExitModalEnabled) activateExitIntent('#customExitModal');
+});
+
+// Smooth scroll for navigation links
+function setupNavLinkSmoothScroll() {
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href');
+      const targetSection = document.querySelector(targetId);
+
+      if (targetSection) {
+        const headerHeight = 125;
+        const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+}
+
+function setupInfoTooltips() {
+  infoBtns.forEach(icon => {
+    icon.addEventListener('mouseenter', (e) => {
+      const service = e.target.dataset.service;
+      showTooltip(icon, service);
+    });
+
+    icon.addEventListener('mouseleave', () => {
+      hideTooltip();
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.fa-circle-info')) {
+      hideTooltip();
+    }
+  });
+}
+
+function showTooltip(iconElement, service) {
+  const rect = iconElement.getBoundingClientRect();
+  tooltipText.textContent = tooltipContent[service];
+
+  // Position below the icon
+  tooltip.style.left = rect.left + (rect.width / 2) + 'px';
+  tooltip.style.top = rect.bottom + 8 + 'px';
+  tooltip.style.transform = 'translateX(-50%)';
+
+  tooltip.classList.add('visible');
+};
+
+function hideTooltip() {
+  tooltip.classList.remove('visible');
+};
+
+// TODO make speed a percentage of viewport width
 function startCarouselInfiniteScroll(carouselTrack, speed = 160) {
   let currentX = 0;
   let lastTimestamp = null;
@@ -224,148 +187,169 @@ function startReviewsCarousel() {
   scrollToReview(0);
 }
 
-function showTooltip(iconElement, service) {
-  const rect = iconElement.getBoundingClientRect();
-  tooltipText.textContent = tooltipContent[service];
+// EXIT INTENT MODAL - Complete Setup
+function activateExitIntent(modalSelector) {
+  const modal = document.querySelector(modalSelector);
 
-  // Position below the icon
-  tooltip.style.left = rect.left + (rect.width / 2) + 'px';
-  tooltip.style.top = rect.bottom + 8 + 'px';
-  tooltip.style.transform = 'translateX(-50%)';
-
-  tooltip.classList.add('visible');
-};
-
-function hideTooltip() {
-  tooltip.classList.remove('visible');
-};
-
-// Smooth scroll for navigation links
-navLinks.forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const targetId = link.getAttribute('href');
-    const targetSection = document.querySelector(targetId);
-
-    if (targetSection) {
-      const headerHeight = 125;
-      const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-    }
-  });
-});
-
-// Desktop: hover behavior
-infoBtns.forEach(icon => {
-  icon.addEventListener('mouseenter', (e) => {
-    const service = e.target.dataset.service;
-    showTooltip(icon, service);
-  });
-
-  icon.addEventListener('mouseleave', () => {
-    hideTooltip();
-  });
-
-  // Mobile: tap behavior - stop propagation so it doesn't trigger addon selection
-  icon.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const service = e.target.dataset.service;
-
-    if (tooltip.classList.contains('visible')) {
-      hideTooltip();
-    } else {
-      showTooltip(icon, service);
-    }
-  });
-});
-
-// Package selection for CTA button
-packages.forEach(pkg => {
-  pkg.addEventListener('click', (e) => {
-
-    if (pkg.classList.contains('selected')) {
-
-      addonItems.forEach(item => {
-        item.classList.toggle(`package-${pkg.classList[1]}`)
-      })
-
-      pkg.classList.remove('selected');
-
-      cart.package = null;
-      ctaButton.classList.remove('selected-basic', 'selected-complete', 'selected-luxe');
-
-    } else {
-
-      addonItems.forEach(item => {
-        item.classList.remove('package-basic', 'package-complete', 'package-luxe')
-        item.classList.add(`package-${pkg.classList[1]}`)
-      })
-
-      packages.forEach(p => p.classList.remove('selected'));
-      pkg.classList.add('selected');
-
-      if (pkg.classList.contains('basic')) {
-        // updateCart();
-        cart.package = 'basic';
-        ctaButton.classList.remove('selected-complete', 'selected-luxe');
-        ctaButton.classList.add('selected-basic');
-
-      } else if (pkg.classList.contains('complete')) {
-        // updateCart();
-        cart.package = 'complete';
-        ctaButton.classList.remove('selected-basic', 'selected-luxe');
-        ctaButton.classList.add('selected-complete');
-
-      } else if (pkg.classList.contains('luxe')) {
-        // updateCart();
-        cart.package = 'luxe';
-        ctaButton.classList.remove('selected-basic', 'selected-complete');
-        ctaButton.classList.add('selected-luxe');
-      }
-    }
-
-
-
-
-    // Update cart with package selection
-
-    console.log(ctaButton.classList);
-
-  });
-});
-
-// Addon selection
-addonItems.forEach(addon => {
-  addon.addEventListener('click', (e) => {
-    // Don't trigger if clicking the info icon
-    if (e.target.classList.contains('fa-circle-info')) {
-      return;
-    }
-
-    const service = addon.querySelector('.fa-circle-info').dataset.service;
-
-    // Toggle selection
-    addon.classList.toggle('selected');
-
-    // Update cart
-    if (addon.classList.contains('selected')) {
-      cart.addons.add(service);
-    } else {
-      cart.addons.delete(service);
-    }
-  });
-});
-
-// Close tooltip when clicking outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.fa-circle-info')) {
-    hideTooltip();
+  if (!modal) {
+    console.warn(`Modal with selector "${modalSelector}" not found`);
+    return;
   }
-});
+
+  const closeBtn = modal.querySelector('.exit-modal-close');
+  const declineBtn = modal.querySelector('.exit-modal-decline');
+  const ctaBtn = modal.querySelector('.exit-modal-cta');
+
+  let popupHasShown = false;
+  let triggerTime = null;
+
+  // Check if already shown this session
+  if (sessionStorage.getItem('exitModalShown')) {
+    popupHasShown = true;
+  }
+
+  // Show modal function
+  const showModal = () => {
+    if (!popupHasShown) {
+      modal.classList.add('show');
+      document.body.classList.add('modal-open');
+      popupHasShown = true;
+      sessionStorage.setItem('exitModalShown', 'true');
+    }
+  };
+
+  // Hide modal function
+  const hideModal = () => {
+    modal.classList.remove('show');
+    document.body.classList.remove('modal-open');
+  };
+
+  // --- Desktop Detection: Mouse leaving the top of the viewport ---
+  document.addEventListener('mouseleave', function(e) {
+    triggerTime = Date.now();
+  });
+
+  document.addEventListener('mouseout', function(e) {
+    const isLeaving = (Date.now() - triggerTime) > 10 && !e.toElement && !e.relatedTarget;
+    if (isLeaving && !popupHasShown && e.clientY < 50) {
+      showModal();
+    }
+  });
+
+  // --- Mobile Detection: Back button ---
+  window.addEventListener('popstate', () => {
+    if (!popupHasShown) {
+      showModal();
+      // Push state back so modal can be closed
+      window.history.pushState(null, '', window.location.href);
+    }
+  });
+
+  // --- Close Modal Event Handlers ---
+
+  // Close button
+  if (closeBtn) {
+    closeBtn.addEventListener('click', hideModal);
+  }
+
+  // Decline button
+  if (declineBtn) {
+    declineBtn.addEventListener('click', hideModal);
+  }
+
+  // CTA button (calls checkout, then closes)
+  if (ctaBtn) {
+    ctaBtn.addEventListener('click', () => {
+      hideModal();
+      // checkout() is called via onclick in HTML
+    });
+  }
+
+  // Close when clicking outside modal content
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      hideModal();
+    }
+  });
+
+  // Close with Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('show')) {
+      hideModal();
+    }
+  });
+}
+
+function setupPackageSelectionBehavior() {
+  packages.forEach(pkg => {
+    pkg.addEventListener('click', (e) => {
+
+      if (pkg.classList.contains('selected')) {
+
+        addonItems.forEach(item => {
+          item.classList.toggle(`package-${pkg.classList[1]}`)
+        })
+
+        pkg.classList.remove('selected');
+
+        cart.package = null;
+        ctaButton.classList.remove('selected-basic', 'selected-complete', 'selected-luxe');
+
+      } else {
+
+        addonItems.forEach(item => {
+          item.classList.remove('package-basic', 'package-complete', 'package-luxe')
+          item.classList.add(`package-${pkg.classList[1]}`)
+        })
+
+        packages.forEach(p => p.classList.remove('selected'));
+        pkg.classList.add('selected');
+
+        if (pkg.classList.contains('basic')) {
+          // updateCart(); // TODO
+          cart.package = 'basic';
+          ctaButton.classList.remove('selected-complete', 'selected-luxe');
+          ctaButton.classList.add('selected-basic');
+
+        } else if (pkg.classList.contains('complete')) {
+          // updateCart(); // TODO
+          cart.package = 'complete';
+          ctaButton.classList.remove('selected-basic', 'selected-luxe');
+          ctaButton.classList.add('selected-complete');
+
+        } else if (pkg.classList.contains('luxe')) {
+          // updateCart(); // TODO
+          cart.package = 'luxe';
+          ctaButton.classList.remove('selected-basic', 'selected-complete');
+          ctaButton.classList.add('selected-luxe');
+        }
+      }
+    });
+  });
+}
+
+function setupAddonSelectionBehavior() {
+  addonItems.forEach(addon => {
+    addon.addEventListener('click', (e) => {
+      // Don't trigger if clicking the info icon
+      if (e.target.classList.contains('fa-circle-info')) {
+        return;
+      }
+
+      const service = addon.querySelector('.fa-circle-info').dataset.service;
+
+      // Toggle selection
+      addon.classList.toggle('selected');
+
+      // Update cart
+      if (addon.classList.contains('selected')) {
+        cart.addons.add(service);
+      } else {
+        cart.addons.delete(service);
+      }
+    });
+  });
+}
 
 // Checkout function - accessible from console
 function checkout() {

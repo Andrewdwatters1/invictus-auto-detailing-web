@@ -136,7 +136,9 @@ function handlePackageSelection(card, packageType) {
   ctaButton.classList.remove('selected-basic', 'selected-complete', 'selected-luxe');
 
   if (!wasSelected) {
-    // Select this package
+    // Select this package]
+    updateCart(); // TODO
+    // TODO if a package is selected auto open the add ons list
     card.classList.add('selected');
     cart.package = packageType;
 
@@ -268,7 +270,7 @@ function startCarouselInfiniteScroll(track, speed = 50) {
     }, 50);
   }
 
-  function step(timestamp) {
+  function step(timestamp) { // TODO make this more efficient and so it scrolls smoothly (not jumpy)
     if (!lastTimestamp) lastTimestamp = timestamp;
     const delta = (timestamp - lastTimestamp) / 1000;
     lastTimestamp = timestamp;
@@ -306,7 +308,7 @@ function startCarouselInfiniteScroll(track, speed = 50) {
 // ==========================================
 // CHECKOUT
 // ==========================================
-function checkout() {
+function checkout() { // TODO add add on selections
   const redirectMap = {
     default: 'https://form.jotform.com/ventureinvictus/detail-intake-form',
     basic: 'https://form.jotform.com/252885754777175/prefill/6907e43a6630306492fa85154c7b',
@@ -320,10 +322,10 @@ function checkout() {
     target = redirectMap[cart.package];
   }
 
-  console.log('Checkout:', {
-    package: cart.package,
-    addons: Array.from(cart.addons)
-  });
+  // console.log('Checkout:', {
+  //   package: cart.package,
+  //   addons: Array.from(cart.addons)
+  // });
 
   window.location.href = target;
 }
