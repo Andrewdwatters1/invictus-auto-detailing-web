@@ -91,7 +91,8 @@ document.addEventListener('click', (e) => {
   }
 });
 
-
+// TODO when a package is selected the add-ons section should automatically expand...
+// TODO decide on behavior when package is de-selected (close add-ons, remove from cart, etc)
 function setupPackageSelectionBehavior() {
   serviceCards.forEach(card => {
     const header = card.querySelector('.service-header');

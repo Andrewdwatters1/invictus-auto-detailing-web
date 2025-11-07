@@ -280,6 +280,8 @@ function activateExitIntent(modalSelector) {
   });
 }
 
+// TODO when a package is selected the add-ons section should automatically expand...
+// TODO decide on behavior when package is de-selected (close add-ons, remove from cart, etc)
 function setupPackageSelectionBehavior() {
   packages.forEach(pkg => {
     pkg.addEventListener('click', (e) => {
