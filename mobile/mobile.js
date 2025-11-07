@@ -1,20 +1,9 @@
-// ==========================================
-// STATE MANAGEMENT
-// ==========================================
-const cart = {
-  package: null,
-  addons: new Set()
-};
+// ENABLE/DISABLE FEATURES
+let cartEnabled = false;
+let reviewsEnabled = false;
+let beforeExitModalEnabled = false;
 
-const tooltipContent = {
-  odor: 'Professional ozone treatment and deep cleaning to eliminate stubborn odors from smoke, pets, mildew, and more.',
-  pet: 'Specialized tools and techniques to remove embedded pet hair from all surfaces, including hard-to-reach areas.',
-  intensive: 'Additional time and attention for heavily soiled vehicles requiring extra care and multiple passes.'
-};
-
-// ==========================================
-// DOM ELEMENTS
-// ==========================================
+// DOM Nodes
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
 const navLinks = document.querySelectorAll('.nav-menu a');
@@ -25,6 +14,51 @@ const tooltip = document.getElementById('info-tooltip');
 const tooltipText = tooltip?.querySelector('.tooltip-text');
 const closeTooltip = tooltip?.querySelector('.close-tooltip');
 const carouselTrack = document.getElementById('carousel-track');
+
+const tooltipContent = {
+  odor: 'Professional ozone treatment and deep cleaning to eliminate stubborn odors from smoke, pets, mildew, and more.',
+  pet: 'Specialized tools and techniques to remove embedded pet hair from all surfaces, including hard-to-reach areas.',
+  intensive: 'Additional time and attention for heavily soiled vehicles requiring extra care and multiple passes.'
+};
+
+// Cart State
+const cart = {
+  package: null,
+  addons: new Set()
+};
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  setupNavLinkSmoothScroll();
+  setupPackageSelectionBehavior();
+  setupAddonSelectionBehavior();
+  setupInfoTooltips();
+
+  startCarouselInfiniteScroll(carouselTrack, 160);
+
+});
+
+function setupNavLinkSmoothScroll() {
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      setTimeout(closeMenu, 500);
+
+      const targetId = link.getAttribute('href');
+      const targetSection = document.querySelector(targetId);
+
+      if (targetSection) {
+        const headerHeight = document.querySelector('header').offsetHeight;
+        const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+}
 
 // ==========================================
 // HAMBURGER MENU
@@ -47,27 +81,8 @@ if (hamburger) {
   hamburger.addEventListener('click', toggleMenu);
 }
 
-navLinks.forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    setTimeout(closeMenu, 500);
 
-    const targetId = link.getAttribute('href');
-    const targetSection = document.querySelector(targetId);
-
-    if (targetSection) {
-      const headerHeight = document.querySelector('header').offsetHeight;
-      const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
-
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-    }
-  });
-});
-
-// Close menu when clicking outside
+// Close menu when clicking outside // HAMBURGER AND NAV
 document.addEventListener('click', (e) => {
   if (navMenu.classList.contains('active') &&
       !navMenu.contains(e.target) &&
@@ -76,47 +91,45 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// ==========================================
-// EXPANDABLE SERVICE CARDS
-// ==========================================
-serviceCards.forEach(card => {
-  const header = card.querySelector('.service-header');
-  const expandBtn = card.querySelector('.expand-btn');
+// TODO when a package is selected the add-ons section should automatically expand...
+// TODO decide on behavior when package is de-selected (close add-ons, remove from cart, etc)
+function setupPackageSelectionBehavior() {
+  serviceCards.forEach(card => {
+    const header = card.querySelector('.service-header');
+    const expandBtn = card.querySelector('.expand-btn');
 
-  if (header && expandBtn) {
-    header.addEventListener('click', (e) => {
-      // Don't expand if clicking on info icon
-      if (e.target.closest('.info-icon')) {
-        return;
-      }
+    if (header && expandBtn) {
+      header.addEventListener('click', (e) => {
+        // Don't expand if clicking on info icon
+        if (e.target.closest('.info-icon')) {
+          return;
+        }
 
-      // If it's a package card, toggle selection
-      const packageType = card.dataset.package;
-      if (packageType) {
-        handlePackageSelection(card, packageType);
-      }
+        // If it's a package card, toggle selection
+        const packageType = card.dataset.package;
+        if (packageType) {
+          handlePackageSelection(card, packageType);
+        }
 
-      // Toggle expansion
-      const wasExpanded = card.classList.contains('expanded');
+        // Toggle expansion
+        const wasExpanded = card.classList.contains('expanded');
 
-      // Close all other cards on mobile
-      if (window.innerWidth < 768) {
-        serviceCards.forEach(c => c.classList.remove('expanded'));
-      }
+        // Close all other cards on mobile
+        if (window.innerWidth < 768) {
+          serviceCards.forEach(c => c.classList.remove('expanded'));
+        }
 
-      // Toggle this card
-      if (!wasExpanded) {
-        card.classList.add('expanded');
-      } else {
-        card.classList.remove('expanded');
-      }
-    });
-  }
-});
+        // Toggle this card
+        if (!wasExpanded) {
+          card.classList.add('expanded');
+        } else {
+          card.classList.remove('expanded');
+        }
+      });
+    }
+  });
+}
 
-// ==========================================
-// PACKAGE SELECTION
-// ==========================================
 function handlePackageSelection(card, packageType) {
   const wasSelected = card.classList.contains('selected');
 
@@ -136,7 +149,9 @@ function handlePackageSelection(card, packageType) {
   ctaButton.classList.remove('selected-basic', 'selected-complete', 'selected-luxe');
 
   if (!wasSelected) {
-    // Select this package
+    // Select this package]
+    updateCart(); // TODO
+    // TODO if a package is selected auto open the add ons list
     card.classList.add('selected');
     cart.package = packageType;
 
@@ -153,30 +168,52 @@ function handlePackageSelection(card, packageType) {
   }
 }
 
-// ==========================================
-// ADDON SELECTION
-// ==========================================
-addonItems.forEach(addon => {
-  addon.addEventListener('click', (e) => {
-    // Don't toggle if clicking info icon
-    if (e.target.closest('.info-icon')) {
-      return;
-    }
+function setupAddonSelectionBehavior() {
+  addonItems.forEach(addon => {
+    addon.addEventListener('click', (e) => {
+      // Don't toggle if clicking info icon
+      if (e.target.closest('.info-icon')) {
+        return;
+      }
 
-    const service = addon.dataset.service;
-    addon.classList.toggle('selected');
+      const service = addon.dataset.service;
+      addon.classList.toggle('selected');
 
-    if (addon.classList.contains('selected')) {
-      cart.addons.add(service);
-    } else {
-      cart.addons.delete(service);
+      if (addon.classList.contains('selected')) {
+        cart.addons.add(service);
+      } else {
+        cart.addons.delete(service);
+      }
+    });
+  });
+}
+
+function setupInfoTooltips() {
+  // Info icon handlers
+  document.querySelectorAll('.info-icon').forEach(icon => {
+    icon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const service = icon.closest('[data-service]')?.dataset.service;
+      if (service) {
+        showTooltip(icon, service);
+      }
+    });
+  });
+
+  if (closeTooltip) {
+    closeTooltip.addEventListener('click', hideTooltip);
+  }
+
+  // Close tooltip when clicking outside
+  document.addEventListener('click', (e) => {
+    if (tooltip?.classList.contains('visible') &&
+        !tooltip.contains(e.target) &&
+        !e.target.closest('.info-icon')) {
+      hideTooltip();
     }
   });
-});
+}
 
-// ==========================================
-// TOOLTIP MANAGEMENT
-// ==========================================
 function showTooltip(iconElement, service) {
   if (!tooltip || !tooltipText) return;
 
@@ -210,33 +247,8 @@ function hideTooltip() {
   }
 }
 
-// Info icon handlers
-document.querySelectorAll('.info-icon').forEach(icon => {
-  icon.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const service = icon.closest('[data-service]')?.dataset.service;
-    if (service) {
-      showTooltip(icon, service);
-    }
-  });
-});
 
-if (closeTooltip) {
-  closeTooltip.addEventListener('click', hideTooltip);
-}
-
-// Close tooltip when clicking outside
-document.addEventListener('click', (e) => {
-  if (tooltip?.classList.contains('visible') &&
-      !tooltip.contains(e.target) &&
-      !e.target.closest('.info-icon')) {
-    hideTooltip();
-  }
-});
-
-// ==========================================
-// CAROUSEL
-// ==========================================
+// TODO make scroll speed a percentage of viewport width
 function startCarouselInfiniteScroll(track, speed = 50) {
   if (!track) return;
 
@@ -268,7 +280,7 @@ function startCarouselInfiniteScroll(track, speed = 50) {
     }, 50);
   }
 
-  function step(timestamp) {
+  function step(timestamp) { // TODO make this more efficient and so it scrolls smoothly (not jumpy)
     if (!lastTimestamp) lastTimestamp = timestamp;
     const delta = (timestamp - lastTimestamp) / 1000;
     lastTimestamp = timestamp;
@@ -303,10 +315,8 @@ function startCarouselInfiniteScroll(track, speed = 50) {
   requestAnimationFrame(step);
 }
 
-// ==========================================
-// CHECKOUT
-// ==========================================
-function checkout() {
+// // Checkout (Redirect to Intake)
+function checkout() { // TODO add add on selections
   const redirectMap = {
     default: 'https://form.jotform.com/ventureinvictus/detail-intake-form',
     basic: 'https://form.jotform.com/252885754777175/prefill/6907e43a6630306492fa85154c7b',
@@ -320,10 +330,10 @@ function checkout() {
     target = redirectMap[cart.package];
   }
 
-  console.log('Checkout:', {
-    package: cart.package,
-    addons: Array.from(cart.addons)
-  });
+  // console.log('Checkout:', {
+  //   package: cart.package,
+  //   addons: Array.from(cart.addons)
+  // });
 
   window.location.href = target;
 }
@@ -331,18 +341,6 @@ function checkout() {
 if (ctaButton) {
   ctaButton.addEventListener('click', checkout);
 }
-
-// ==========================================
-// INITIALIZATION
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-  startCarouselInfiniteScroll(carouselTrack, 160);
-
-  // Auto-expand first service card on desktop
-  if (window.innerWidth >= 768 && serviceCards.length > 0) {
-    serviceCards[0].classList.add('expanded');
-  }
-});
 
 // Handle window resize
 let resizeTimeout;
