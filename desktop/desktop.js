@@ -1,7 +1,7 @@
 // ENABLE/DISABLE FEATURES
 let cartEnabled = false;
 let reviewsEnabled = false;
-let beforeExitModalEnabled = false;
+let beforeExitModalEnabled = false; // TODO complete me
 
 // DOM Nodes
 const packages = document.querySelectorAll('.service:not(.add-ons)');
