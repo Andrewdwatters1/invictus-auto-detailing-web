@@ -183,11 +183,37 @@
         <p>"Lorem Ipsum review 3"</p>
         <strong>- First M. Last, Colorado Springs</strong>
       </div>
-    </div>
-  </section> -->
+    </div> -->
+  </section>
+
+  <!-- Cart -->
+  <div class="cart">
+    <i id="cart" class="fa-solid fa-cart-shopping"></i>
+  </div>
 
   <!-- Sticky CTA -->
   <button class="sticky-cta" onclick="checkout()">Book Now</button>
+
+  <!-- Exit Modal -->
+  <div id="customExitModal" class="exit-modal">
+    <div class="exit-modal-content">
+      <button class="exit-modal-close" aria-label="Close modal">&times;</button>
+
+      <div class="exit-modal-body">
+        <h3>Wait! Not sure which package is right?</h3>
+        <p class="exit-modal-text">Let's schedule a free estimate and we'll recommend the perfect detail for your vehicle.</p>
+
+        <button class="exit-modal-cta" onclick="checkout()">
+          Yes, that sounds better
+        </button>
+
+        <button class="exit-modal-decline">
+          No thanks
+          <span class="exit-modal-subtext">I like my car dirty</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
 <!-- TODO redirect to these above pre-filled links on submit -->
   <footer id="social" class="footer">

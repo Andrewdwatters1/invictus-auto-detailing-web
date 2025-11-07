@@ -9,9 +9,115 @@ const navLinks = document.querySelectorAll('a.scroller');
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-  startCarouselInfiniteScroll(carouselTrack, 160); // pixels per second
+  startCarouselInfiniteScroll(carouselTrack, 120); // pixels per second
   startReviewsCarousel();
+  activateExitIntent('#customExitModal');
 });
+
+// ==========================================
+// EXIT INTENT MODAL - Complete Setup
+// ==========================================
+function activateExitIntent(modalSelector) {
+  const modal = document.querySelector(modalSelector);
+
+  if (!modal) {
+    console.warn(`Modal with selector "${modalSelector}" not found`);
+    return;
+  }
+
+  const closeBtn = modal.querySelector('.exit-modal-close');
+  const declineBtn = modal.querySelector('.exit-modal-decline');
+  const ctaBtn = modal.querySelector('.exit-modal-cta');
+
+  let popupHasShown = false;
+  let triggerTime = null;
+
+  // Check if already shown this session
+  if (sessionStorage.getItem('exitModalShown')) {
+    popupHasShown = true;
+  }
+
+  // Show modal function
+  const showModal = () => {
+    if (!popupHasShown) {
+      modal.classList.add('show');
+      document.body.classList.add('modal-open');
+      popupHasShown = true;
+      sessionStorage.setItem('exitModalShown', 'true');
+    }
+  };
+
+  // Hide modal function
+  const hideModal = () => {
+    modal.classList.remove('show');
+    document.body.classList.remove('modal-open');
+  };
+
+  // --- Desktop Detection: Mouse leaving the top of the viewport ---
+  document.addEventListener('mouseleave', function(e) {
+    triggerTime = Date.now();
+  });
+
+  document.addEventListener('mouseout', function(e) {
+    const isLeaving = (Date.now() - triggerTime) > 10 && !e.toElement && !e.relatedTarget;
+    if (isLeaving && !popupHasShown && e.clientY < 50) {
+      showModal();
+    }
+  });
+
+  // --- Mobile Detection: Back button ---
+  window.addEventListener('popstate', () => {
+    if (!popupHasShown) {
+      showModal();
+      // Push state back so modal can be closed
+      window.history.pushState(null, '', window.location.href);
+    }
+  });
+
+  // --- Close Modal Event Handlers ---
+
+  // Close button
+  if (closeBtn) {
+    closeBtn.addEventListener('click', hideModal);
+  }
+
+  // Decline button
+  if (declineBtn) {
+    declineBtn.addEventListener('click', hideModal);
+  }
+
+  // CTA button (calls checkout, then closes)
+  if (ctaBtn) {
+    ctaBtn.addEventListener('click', () => {
+      hideModal();
+      // checkout() is called via onclick in HTML
+    });
+  }
+
+  // Close when clicking outside modal content
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      hideModal();
+    }
+  });
+
+  // Close with Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('show')) {
+      hideModal();
+    }
+  });
+}
+
+// --- Usage Example ---
+
+// 1. Add your modal HTML and CSS (initially hidden, e.g., display: none;)
+// 2. Call the function with your modal's selector when the DOM is ready
+
+document.addEventListener('DOMContentLoaded', () => {
+    activateExitIntent('#myCustomExitModal');
+});
+
 
 // Cart management
 const cart = {
@@ -19,12 +125,10 @@ const cart = {
   addons: new Set() // Set of addon service names
 };
 
-const tooltipContent = { // TODO
-  odor: 'Deep Odor Treatment description',
-  pet: 'Pet Hair Treatment description',
-  intensive: 'Intensive Care description',
-  headlights: 'Headlight Restoration description',
-  'both-lights': 'Headlight/Taillight Restoration description'
+const tooltipContent = {
+  odor: 'Professional ozone treatment and deep cleaning to eliminate stubborn odors from smoke, pets, mildew, and more.',
+  pet: 'Specialized tools and techniques to remove embedded pet hair from all surfaces, including hard-to-reach areas.',
+  intensive: 'Additional time and attention for heavily soiled vehicles requiring extra care and multiple passes.'
 };
 
 function startCarouselInfiniteScroll(carouselTrack, speed = 160) {
@@ -99,7 +203,7 @@ function startReviewsCarousel() {
   if (!reviewWidget || !reviewSlides) {
     return;
   }
-  
+
   let currentReview = 0;
   const reviewInterval = 5000; // 5 seconds
 
@@ -205,16 +309,19 @@ packages.forEach(pkg => {
       pkg.classList.add('selected');
 
       if (pkg.classList.contains('basic')) {
+        // updateCart();
         cart.package = 'basic';
         ctaButton.classList.remove('selected-complete', 'selected-luxe');
         ctaButton.classList.add('selected-basic');
 
       } else if (pkg.classList.contains('complete')) {
+        // updateCart();
         cart.package = 'complete';
         ctaButton.classList.remove('selected-basic', 'selected-luxe');
         ctaButton.classList.add('selected-complete');
 
       } else if (pkg.classList.contains('luxe')) {
+        // updateCart();
         cart.package = 'luxe';
         ctaButton.classList.remove('selected-basic', 'selected-complete');
         ctaButton.classList.add('selected-luxe');
