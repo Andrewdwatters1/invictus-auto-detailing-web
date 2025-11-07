@@ -351,7 +351,7 @@ function setupAddonSelectionBehavior() {
   });
 }
 
-// Checkout function - accessible from console
+// Checkout (Redirect to Intake)
 function checkout() {
 
   const selections = {
