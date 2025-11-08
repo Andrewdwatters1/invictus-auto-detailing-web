@@ -10,7 +10,7 @@ const FEATURES = {
 // ==========================================
 // DEVICE DETECTION
 // ==========================================
-const isMobile = window.innerWidth < 768;
+let isMobile; // set to a bool in DOMContentLoaded
 
 // ==========================================
 // DOM ELEMENTS - SHARED
@@ -61,6 +61,8 @@ const cart = {
 // INITIALIZATION
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+  isMobile = window.innerWidth < 768;
+
   setupNavigation();
   setupPackageSelection();
   setupAddonSelection();
