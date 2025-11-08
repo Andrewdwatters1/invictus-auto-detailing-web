@@ -895,8 +895,8 @@ header h1 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(0.625rem);
+  -webkit-backdrop-filter: blur(0.625rem);
   z-index: 10000;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -918,10 +918,335 @@ header h1 {
     0 1.25rem 3.75rem rgba(0, 0, 0, 0.3);
   max-width: 90%;
   width: 28rem;
+  position: relative;
   padding: 2.5rem 2rem 2rem;
   animation: modalSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 @keyframes modalSlideIn {
   from {
-    transform: scale(0. /* TODO claude stopped here */
+    transform: scale(0.8) translateY(-2rem);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.exit-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  background: transparent;
+  color: #333;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.exit-modal-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #00E4F5;
+  transform: rotate(90deg);
+}
+
+.exit-modal-body {
+  text-align: center;
+}
+
+.exit-modal-body h3 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.5rem, 4vw, 1.75rem);
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #222;
+  font-weight: 700;
+}
+
+.exit-modal-text {
+  color: #444;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  margin: 0 0 2rem;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.exit-modal-cta {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #00E4F5, #00b4d8);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-family: system-ui, -apple-system, sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow:
+    0 4px 12px rgba(0, 228, 245, 0.4),
+    0 0 20px rgba(0, 228, 245, 0.2);
+  margin-bottom: 1rem;
+  min-height: 3.5rem;
+}
+
+.exit-modal-cta:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 20px rgba(0, 228, 245, 0.5),
+    0 0 30px rgba(0, 228, 245, 0.3);
+}
+
+.exit-modal-cta:active {
+  transform: translateY(0);
+}
+
+.exit-modal-decline {
+  width: 100%;
+  padding: 0.875rem 2rem;
+  background: transparent;
+  color: #666;
+  border: 2px solid #ddd;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: system-ui, -apple-system, sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 3.5rem;
+  justify-content: center;
+}
+
+.exit-modal-decline:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: #999;
+  color: #333;
+}
+
+.exit-modal-subtext {
+  font-size: 0.75rem;
+  font-style: italic;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+/* Modal mobile adjustments */
+@media (max-width: 768px) {
+  .exit-modal-content {
+    padding: 2rem 1.5rem 1.5rem;
+    width: 85%;
+  }
+
+  .exit-modal-body h3 {
+    font-size: 1.375rem;
+  }
+
+  .exit-modal-text {
+    font-size: 0.9375rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .exit-modal-cta {
+    font-size: 1rem;
+    padding: 0.875rem 1.5rem;
+  }
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* ==========================================
+   GALLERY CAROUSEL
+   ========================================== */
+.carousel-container {
+  width: 90vw;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  height: clamp(18.75rem, 50vw, 31.25rem);
+  border-radius: 0.5rem;
+}
+
+.carousel-track {
+  position: absolute;
+  height: 100%;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.carousel-item {
+  display: inline-block;
+  position: relative;
+  height: 100%;
+  width: auto;
+  margin: 0 1.25rem 0 0;
+  vertical-align: middle;
+}
+
+.carousel-image {
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  display: block;
+}
+
+.carousel-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(3rem, 10vw, 5rem);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 100;
+  text-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.8);
+  transition: opacity 0.3s ease;
+}
+
+.carousel-indicator.show {
+  opacity: 1;
+}
+
+@media (min-width: 768px) {
+  .carousel-container {
+    width: 85vw;
+  }
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+footer.footer {
+  background-color: #111;
+  color: white;
+  padding: 2rem 5%;
+  font-family: var(--font-system);
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 56.25rem;
+  margin: 0 auto;
+}
+
+.footer .info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.footer h2 {
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+  font-weight: 700;
+}
+
+.footer p {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text);
+  padding: 0.875rem 1rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #4a4a4a, #6a6a6a);
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+  min-height: var(--min-touch);
+}
+
+.social-link i {
+  font-size: 1.25rem;
+  width: 1.5rem;
+  text-align: center;
+}
+
+.social-link:active {
+  transform: scale(0.98);
+}
+
+.social-link:hover {
+  box-shadow: 0 0 0.3125rem white inset;
+  color: var(--blue);
+}
+
+@media (min-width: 768px) {
+  .footer-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer .info {
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .social-links {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .social-link {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* ==========================================
+   ACCESSIBILITY & UTILITIES
+   ========================================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+:focus-visible {
+  outline: 0.125rem solid var(--blue);
+  outline-offset: 0.125rem;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
