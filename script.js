@@ -4,7 +4,7 @@
 const FEATURES = {
   cart: false,
   reviews: false,
-  exitModal: false // Desktop only when enabled
+  exitModal: true // Desktop only when enabled
 };
 
 // ==========================================
@@ -504,6 +504,7 @@ function activateExitIntent(modalSelector) {
 
   let popupHasShown = false;
   let triggerTime = null;
+  let lastFocusedEl = null;
 
   // Check if already shown this session
   if (sessionStorage.getItem('exitModalShown')) {
@@ -515,6 +516,12 @@ function activateExitIntent(modalSelector) {
     if (!popupHasShown) {
       modal.classList.add('show');
       document.body.classList.add('modal-open');
+      modal.style.setProperty("position", "fixed", "important");
+
+      lastFocusedEl = document.activeElement;
+      const cta = document.querySelector('#customExitModal .exit-modal-cta')
+      if (cta) cta.focus();
+
       popupHasShown = true;
       sessionStorage.setItem('exitModalShown', 'true');
     }
@@ -524,6 +531,8 @@ function activateExitIntent(modalSelector) {
   const hideModal = () => {
     modal.classList.remove('show');
     document.body.classList.remove('modal-open');
+    modal.style.setProperty("position", "static", "important");
+    lastFocusedEl ? lastFocusedEl.focus() : document.body.focus();
   };
 
   // Desktop: Mouse leaving viewport
