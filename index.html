@@ -35,7 +35,7 @@
   </script>
 
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" defer>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="script.js" defer></script>
 </head>
 
@@ -74,7 +74,7 @@
           <span class="price-badge">109</span>
         </div>
         <button class="expand-btn" aria-label="Expand Basic package details">
-          <div class="chevron"></div>
+          <i class="fas fa-chevron-down"></i>
         </button>
       </div>
       <div class="service-content">
@@ -97,7 +97,7 @@
           <span class="tier-badge-inline">Most Popular</span>
         </div>
         <button class="expand-btn" aria-label="Expand Complete package details">
-          <div class="chevron"></div>
+          <i class="fas fa-chevron-down"></i>
         </button>
       </div>
       <div class="service-content">
@@ -120,7 +120,7 @@
           <span class="price-badge">289</span>
         </div>
         <button class="expand-btn" aria-label="Expand Luxe package details">
-          <div class="chevron"></div>
+          <i class="fas fa-chevron-down"></i>
         </button>
       </div>
       <div class="service-content">
@@ -142,7 +142,7 @@
           <h4>Add Ons</h4>
         </div>
         <button class="expand-btn" aria-label="Expand Add Ons details">
-          <div class="chevron"></div>
+          <i class="fas fa-chevron-down"></i>
         </button>
       </div>
       <div class="service-content">
@@ -242,15 +242,15 @@
       <div class="service-description addons-list">
         <div class="addon-row-3">
           <div class="addon-item" data-service="odor">
-            <span>Deep Odor Treatment – <strong>60</strong></span>
+            <span>Deep Odor Treatment – <strong>$60</strong></span>
             <i class="fa-solid fa-circle-info" data-service="odor"></i>
           </div>
           <div class="addon-item" data-service="pet">
-            <span>Pet Hair Treatment – <strong>40</strong></span>
+            <span>Pet Hair Treatment – <strong>$40</strong></span>
             <i class="fa-solid fa-circle-info" data-service="pet"></i>
           </div>
           <div class="addon-item" data-service="intensive">
-            <span>Intensive Care - <strong>50</strong></span>
+            <span>Intensive Care - <strong>$50</strong></span>
             <i class="fa-solid fa-circle-info" data-service="intensive"></i>
           </div>
         </div>
@@ -264,6 +264,9 @@
     <p class="tooltip-text"></p>
   </div>
 
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
   <!-- Gallery -->
   <section id="gallery" class="section-box">
     <h2>Recent Results</h2>
@@ -271,43 +274,43 @@
       <div class="carousel-track" id="carousel-track">
         <div class="carousel-item">
           <picture>
-            <img src="images/1-slide.webp" alt="Auto detailing result showcase" class="carousel-image" loading="lazy" fetchpriority="high">
+            <source srcset="images/1-slide.webp" type="image/webp">
             <img src="images/1-slide.jpg" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
-            <img src="images/3-slide.webp" alt="Auto detailing result showcase" class="carousel-image" loading="lazy" fetchpriority="high">
+            <source srcset="images/3-slide.webp" type="image/webp">
             <img src="images/3-slide.jpg" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
-            <img src="images/4-slide.webp" alt="Auto detailing result showcase" class="carousel-image" loading="lazy" fetchpriority="high">
+            <source srcset="images/4-slide.webp" type="image/webp">
             <img src="images/4-slide.jpg" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
-            <img src="images/5-slide.webp" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
+            <source srcset="images/5-slide.webp" type="image/webp">
             <img src="images/5-slide.jpg" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
-            <img src="images/6-slide.webp" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
+            <source srcset="images/6-slide.webp" type="image/webp">
             <img src="images/6-slide.jpg" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
-            <img src="images/7-slide.webp" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
+            <source srcset="images/7-slide.webp" type="image/webp">
             <img src="images/7-slide.jpg" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
-            <img src="images/8-slide.webp" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
+            <source srcset="images/8-slide.webp" type="image/webp">
             <img src="images/8-slide.jpg" alt="Auto detailing result showcase" class="carousel-image" loading="lazy">
           </picture>
         </div>

@@ -4,13 +4,13 @@
 const FEATURES = {
   cart: false,
   reviews: false,
-  exitModal: true // Desktop only when enabled
+  exitModal: false // Desktop only when enabled
 };
 
 // ==========================================
 // DEVICE DETECTION
 // ==========================================
-let isMobile; // set to a bool in DOMContentLoaded
+const isMobile = window.innerWidth < 768;
 
 // ==========================================
 // DOM ELEMENTS - SHARED
@@ -20,6 +20,7 @@ const ctaButton = document.querySelector('.sticky-cta');
 const tooltip = document.getElementById('info-tooltip');
 const tooltipText = tooltip?.querySelector('.tooltip-text');
 const carouselTrack = document.getElementById('carousel-track');
+const toast = document.getElementById('toast');
 
 // ==========================================
 // DOM ELEMENTS - MOBILE SPECIFIC
@@ -61,8 +62,6 @@ const cart = {
 // INITIALIZATION
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-  isMobile = window.innerWidth < 768;
-
   setupNavigation();
   setupPackageSelection();
   setupAddonSelection();
@@ -506,7 +505,6 @@ function activateExitIntent(modalSelector) {
 
   let popupHasShown = false;
   let triggerTime = null;
-  let lastFocusedEl = null;
 
   // Check if already shown this session
   if (sessionStorage.getItem('exitModalShown')) {
@@ -518,12 +516,6 @@ function activateExitIntent(modalSelector) {
     if (!popupHasShown) {
       modal.classList.add('show');
       document.body.classList.add('modal-open');
-      modal.style.setProperty("position", "fixed", "important");
-
-      lastFocusedEl = document.activeElement;
-      const cta = document.querySelector('#customExitModal .exit-modal-cta')
-      if (cta) cta.focus();
-
       popupHasShown = true;
       sessionStorage.setItem('exitModalShown', 'true');
     }
@@ -533,8 +525,6 @@ function activateExitIntent(modalSelector) {
   const hideModal = () => {
     modal.classList.remove('show');
     document.body.classList.remove('modal-open');
-    modal.style.setProperty("position", "static", "important");
-    lastFocusedEl ? lastFocusedEl.focus() : document.body.focus();
   };
 
   // Desktop: Mouse leaving viewport
