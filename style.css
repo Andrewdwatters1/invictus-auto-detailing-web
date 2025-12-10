@@ -314,7 +314,6 @@ header h1 {
   #services {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
     margin: 0 auto;
     max-width: 56.25rem;
     padding: 2.5rem 5%;
@@ -566,7 +565,6 @@ header h1 {
   #services {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
     margin: 0 auto;
     max-width: 56.25rem;
     padding: 2.5rem 5%;
@@ -1291,6 +1289,15 @@ footer.footer {
 :focus-visible {
   outline: 0.125rem solid var(--blue);
   outline-offset: 0.125rem;
+}
+
+
+#services > .mobile-only {
+  gap: 1rem;
+}
+
+#services > .desktop-only {
+  gap: 1.25rem;
 }
 
 /* Reduce motion for users who prefer it */
