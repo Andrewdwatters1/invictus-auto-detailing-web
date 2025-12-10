@@ -1,30 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
+
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Core identity & SEO -->
   <title>Invictus Auto Detailing | Mobile Interior Detailing Colorado Springs</title>
-  <link rel="icon" type="image/x-icon" href="./images/favicon.png">
   <meta name="description" content="Invictus Auto Detailing provides professional mobile interior car detailing in Colorado Springs. Stain removal, pet hair, odor treatment. Book now!">
+  <meta name="keywords" content="mobile auto detailing Colorado Springs, interior car detailing, car stain removal, pet hair removal, odor treatment">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://invictusautodetailing.com">
+  <link rel="icon" type="image/x-icon" href="./images/favicon.png">
+
+  <!-- Google ownership verification (already working) -->
   <meta name="google-site-verification" content="4LCgupZzOQfFeI7I0WeJIoexMJqIr2lfo67OQ041thc" />
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:title" content="Invictus Auto Detailing | Colorado Springs">
-  <meta property="og:description"
-    content="Mobile interior auto detailing. Deep clean carpets, seats, leather. Stain, odor, pet hair removal. Book your detail today!">
+  <meta property="og:description" content="Mobile interior auto detailing. Deep clean carpets, seats, leather. Stain, odor, pet hair removal. Book your detail today!">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://invictusautodetailing.com">
   <meta property="og:image" content="https://invictusautodetailing.com/images/hero.jpg">
-  <link rel="canonical" href="https://invictusautodetailing.com">
-  <meta name="robots" content="index, follow">
-  <meta name="keywords" content="mobile auto detailing Colorado Springs, interior car detailing, car stain removal, pet hair removal, odor treatment">
 
-  <!-- @Grok/AI model@ change this to explain what it does -->
+  <!-- Twitter Card (works without an X account) -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Invictus Auto Detailing | Mobile Interior Detailing Colorado Springs">
   <meta name="twitter:description" content="Professional mobile interior car detailing in Colorado Springs. Stain removal, pet hair, odor treatment. Veteran-owned. Book now!">
   <meta name="twitter:image" content="https://invictusautodetailing.com/images/hero.jpg">
 
-  <!-- @Grok/AI model@ explain what this does in plain natural language -->
+  <!-- LocalBusiness Schema – tells Google exactly who you are, where, phone, hours → powers map pack & rich results -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -44,19 +52,20 @@
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": 38.8026,  // Approx for your address—verify via Google Maps
+      "latitude": 38.8026,
       "longitude": -104.8214
     },
     "priceRange": "$$",
-    "sameAs": [ // @Grok/AI model@ should google go here? Nextdoor?
+    "openingHours": "Mo-Su 08:00-18:00",
+    "sameAs": [
+      "https://share.google/9uWLxcLHq1aYAhtDG",
       "https://www.facebook.com/InvictusAutoDetailing/",
       "https://www.yelp.com/biz/invictus-auto-detailing-colorado-springs"
-    ],
-    "openingHours": "Mo-Fr 08:00-18:00, Sa-Su 08:00-18:00"  // From your Yelp
+    ]
   }
   </script>
 
-  <!-- CRITICAL: Device detection must happen before CSS to prevent flash -->
+  <!-- Critical device detection script – must run before CSS to prevent FOUC -->
   <script>
     (function() {
       const userAgent = navigator.userAgent.toLowerCase();
@@ -64,8 +73,6 @@
       const isMobileWidth = window.innerWidth <= 767;
       const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
       const isMobile = isMobileUA || (isMobileWidth && isTouchDevice);
-
-      // Add class to HTML element immediately
       if (isMobile) {
         document.documentElement.classList.add('is-mobile');
       } else {
@@ -74,10 +81,25 @@
     })();
   </script>
 
+  <!-- Styles & scripts -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" defer>
   <script src="script.js" defer></script>
 </head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <body>
 
