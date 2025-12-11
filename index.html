@@ -32,35 +32,36 @@
 
   <!-- LocalBusiness Schema – tells Google exactly who you are, where, phone, hours → powers map pack & rich results -->
   <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "AutoDetailing",
-      "name": "Invictus Auto Detailing",
-      "description": "Veteran-owned mobile interior auto detailing service in Colorado Springs, CO. Specializing in deep cleans, stain/odor removal, and pet hair treatment.",
-      "url": "https://www.invictusautodetailing.com",
-      "telephone": "+1-719-431-3749",
-      "email": "ventureinvictus@gmail.com",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "2208 Woodburn St",
-        "addressLocality": "Colorado Springs",
-        "addressRegion": "CO",
-        "postalCode": "80906",
-        "addressCountry": "US"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 38.8026,
-        "longitude": -104.8214
-      },
-      "priceRange": "$$",
-      "openingHours": "Mo-Su 08:00-18:00",
-      "sameAs": [
-        "https://share.google/9uWLxcLHq1aYAhtDG",
-        "https://www.facebook.com/InvictusAutoDetailing/",
-        "https://www.yelp.com/biz/invictus-auto-detailing-colorado-springs"
-      ]
-    }
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Invictus Auto Detailing",
+    "description": "Veteran-owned mobile interior auto detailing service in Colorado Springs, CO. Specializing in deep cleans, stain/odor removal, and pet hair treatment.",
+    "url": "https://www.invictusautodetailing.com",
+    "telephone": "+1-719-431-3749",
+    "email": "ventureinvictus@gmail.com",
+    "image": "https://www.invictusautodetailing.com/images/hero.jpg",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "2208 Woodburn St",
+      "addressLocality": "Colorado Springs",
+      "addressRegion": "CO",
+      "postalCode": "80906",
+      "addressCountry": "US"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 38.8026,
+      "longitude": -104.8214
+    },
+    "priceRange": "$$",
+    "openingHours": "Mo-Su 08:00-18:00",
+    "sameAs": [
+      "https://share.google/9uWLxcLHq1aYAhtDG",
+      "https://www.facebook.com/InvictusAutoDetailing/",
+      "https://www.yelp.com/biz/invictus-auto-detailing-colorado-springs"
+    ]
+  }
   </script>
 
   <!-- Review Schema Markup -->
@@ -242,10 +243,7 @@
       <div class="review-card">
         <div class="review-header">
           <div class="stars">★★★★★</div>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="review-source-icon nextdoor-icon">
-            <path fill="#8DD500" d="M24 4L12 16v16l12 12 12-12V16L24 4zm0 3.5L34.5 18v13L24 41.5 13.5 31V18L24 7.5z"/>
-            <path fill="#8DD500" d="M24 12c-4.4 0-8 3.6-8 8v4h3v-4c0-2.8 2.2-5 5-5s5 2.2 5 5v4h3v-4c0-4.4-3.6-8-8-8z"/>
-          </svg>
+          <img src="https://d19rpgkrjeba2z.cloudfront.net/static/v2/favicon-v2-8966217c6adbaaf11c826973a78c023d.svg" alt="Nextdoor" class="review-source-icon nextdoor-icon">
         </div>
         <p class="review-text">"Andrew did an amazing job. The Subaru in his pictures was my car!!! He was on time, very courteous and worked nonstop. I am so happy with the results and would absolutely recommend him and will definitely use him again!"</p>
         <p class="reviewer-name">— Linda C., Chamberlin</p>

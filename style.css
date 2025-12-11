@@ -500,12 +500,16 @@ header h1 {
 }
 
 .review-source-icon {
-  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
   opacity: 0.8;
 }
 
 .yelp-icon {
   color: #ff1a1a;
+  font-size: 2rem;
+  width: auto;
+  height: auto;
 }
 
 .nextdoor-icon {
