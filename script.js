@@ -1,72 +1,86 @@
-// ==========================================
-// FEATURE FLAGS
-// ==========================================
+// TODO - Periodically scrape for real reviews and update reviews section, sitemap
+// TODO - pre/post commit hooks?
+
+
+/* ==========================================
+   GLOBAL STATE & CONFIGURATION
+   ========================================== */
+let isMobile = false;
+
 const FEATURES = {
-  cart: false,
-  reviews: false,
-  exitModal: true // Desktop only when enabled
+  exitModal: true,
 };
 
-// ==========================================
-// DEVICE DETECTION
-// ==========================================
-let isMobile; // set to a bool in DOMContentLoaded
-
-// ==========================================
-// DOM ELEMENTS - SHARED
-// ==========================================
-const navLinks = document.querySelectorAll('.nav-menu a.scroller');
-const ctaButton = document.querySelector('.sticky-cta');
-const tooltip = document.getElementById('info-tooltip');
-const tooltipText = tooltip?.querySelector('.tooltip-text');
-const carouselTrack = document.getElementById('carousel-track');
-
-// ==========================================
-// DOM ELEMENTS - MOBILE SPECIFIC
-// ==========================================
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
-const serviceCards = document.querySelectorAll('.service-card');
-
-// ==========================================
-// DOM ELEMENTS - DESKTOP SPECIFIC
-// ==========================================
-const packages = document.querySelectorAll('.service:not(.add-ons)');
-
-// ==========================================
-// DOM ELEMENTS - BOTH (but different selectors)
-// ==========================================
-const addonItems = document.querySelectorAll('.addon-item');
-const infoBtns = document.querySelectorAll('i.fa-solid.fa-circle-info, .info-icon');
-const closeTooltipBtn = tooltip?.querySelector('.close-tooltip');
-
-// ==========================================
-// TOOLTIP CONTENT
-// ==========================================
-const tooltipContent = {
-  odor: 'Professional ozone treatment and deep cleaning to eliminate stubborn odors from smoke, pets, mildew, and more.',
-  pet: 'Specialized tools and techniques to remove embedded pet hair from all surfaces, including hard-to-reach areas.',
-  intensive: 'Additional time and attention for heavily soiled vehicles requiring extra care and multiple passes.'
-};
-
-// ==========================================
-// CART STATE
-// ==========================================
+// Cart state
 const cart = {
-  package: null, // 'basic', 'complete', or 'luxe'
-  addons: new Set() // Set of addon service names
+  package: null,
+  addons: new Set(),
+  total: 0
 };
 
-// ==========================================
-// INITIALIZATION
-// ==========================================
+// Package prices
+const packagePrices = {
+  basic: 109,
+  complete: 189,
+  luxe: 289
+};
+
+// Addon prices
+const addonPrices = {
+  odor: 60,
+  pet: 40,
+  intensive: 50
+};
+
+// Jotform redirect mapping
+const redirectMap = {
+  default: 'https://form.jotform.com/ventureinvictus/detail-intake-form',
+  basic: 'https://form.jotform.com/252885754777175/prefill/6907e43a6630306492fa85154c7b',
+  complete: 'https://form.jotform.com/252885754777175/prefill/6907e504663030691fb23fb27c1a',
+  luxe: 'https://form.jotform.com/252885754777175/prefill/6907e523616339f110ed07a8ef0a'
+};
+
+// TODO future - Use a script or background chron job or something to scrape reviews when they're written and update this object/schema
+// location is for SEO, canDisplay is for if it's valid to be included in the Review Schema Markup (SEO)
+const reviews = [
+  {
+    author: 'Philip D.',
+    platform: 'Yelp',
+    content: `Outstanding. My pickup was in worse shape than I thought, and I wasn't charged any extra for the extra time it took to get clean. It was all done in my driveway with his materials and tools; I only provided a little electricity. Highly recommended.`,
+    rating: 5,
+    location: 'Broadmoor', // ie neighborhood, great for SEO
+    canDisplay: true
+  },
+  {
+    author: 'Linda C.',
+    platform: 'NextDoor',
+    content: `Andrew did an amazing job. The Subaru in his pictures was my car!!! He was on time, very courteous and worked nonstop. I am so happy with the results and would absolutely recommend him and will definitely use him again!`,
+    rating: 5,
+    location: 'Chamberlin',
+    canDisplay: true
+  },
+  {
+    author: 'Casey S.',
+    platform: 'Linkedin',
+    content: `I wholeheartedly recommend Andrew Watters. Since 2016, Andrew and I have had the privilege of serving together in the Colorado Army National Guard. He demonstrates all the qualities required of an officer in the United States Army and is a superb leader. Not only is his integrity and commitment to his organization evidence of his attention to detail and desire to serve, but he also demonstrates the technical abilities and critical thinking skills necessary to succeed in any capacity he sets his sights on. I do not doubt that Andrew's principles, work ethic, and professionalism will be an asset to whatever team he joins.`,
+    rating: null,
+    location: null,
+    canDisplay: false
+  }
+]
+
+
 document.addEventListener('DOMContentLoaded', () => {
-  isMobile = window.innerWidth < 768;
+  isMobile = window.innerWidth <= 767;
 
   setupNavigation();
   setupPackageSelection();
+  setupMobileServiceCards();
+  setupMobilePackageSelection();
   setupAddonSelection();
   setupInfoTooltips();
+  setupFaqToggles();
+  setupStickyCTA();
   startCarousel();
 
   if (FEATURES.exitModal && !isMobile) {
@@ -74,323 +88,318 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ==========================================
-// NAVIGATION
-// ==========================================
+// Master function for handling pricing
+// FUTURE - Stipe calcs go here
+function updateCart() {
+  let total = 0;
+
+  if (cart.package) {
+    total += packagePrices[cart.package];
+  }
+
+  cart.addons.forEach(addon => {
+    total += addonPrices[addon];
+  });
+
+  cart.total = total;
+  updateCTAButton();
+}
+
+
+function updateCTAButton() {
+  const stickyCTA = document.querySelector('.sticky-cta');
+
+  if (!stickyCTA) return;
+
+  // if (cart.package) {
+  //   stickyCTA.textContent = `Book Now - $${cart.total}`;
+  // } else {
+  //   stickyCTA.textContent = 'Book Now';
+  // }
+}
+
+
+function getCheckoutLink() {
+  if (!cart.package) {
+    return redirectMap.default;
+  }
+
+  return redirectMap[cart.package] || redirectMap.default;
+}
+
+
 function setupNavigation() {
-  // Smooth scroll for nav links
+  const hamburger = document.querySelector('.hamburger');
+  const navMenu = document.querySelector('.nav-menu');
+  const navLinks = document.querySelectorAll('.nav-menu a');
+
+  if (!hamburger || !navMenu) return;
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('active');
+    hamburger.setAttribute('aria-expanded',
+      hamburger.classList.contains('active')
+    );
+  });
+
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
-      e.preventDefault();
+      if (link.classList.contains('scroller') && link.getAttribute('href').startsWith('#')) {
+        e.preventDefault();
 
-      // Close mobile menu if open
-      if (isMobile && navMenu?.classList.contains('active')) {
-        setTimeout(closeMobileMenu, 500);
-      }
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
 
-      const targetId = link.getAttribute('href');
-      const targetSection = document.querySelector(targetId);
+        const targetId = link.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
 
-      if (targetSection) {
-        const headerHeight = document.querySelector('header').offsetHeight;
-        const offset = isMobile ? headerHeight + 16 : 125;
-        const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - offset;
-
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
       }
     });
   });
 
-  // Mobile hamburger menu
-  if (hamburger && navMenu) {
-    hamburger.addEventListener('click', toggleMobileMenu);
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (navMenu.classList.contains('active') &&
-          !navMenu.contains(e.target) &&
-          !hamburger.contains(e.target)) {
-        closeMobileMenu();
-      }
-    });
-  }
-
-  // Handle window resize
-  let resizeTimeout;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      if (window.innerWidth >= 768 && navMenu?.classList.contains('active')) {
-        closeMobileMenu();
-      }
-    }, 250);
+  document.addEventListener('click', (e) => {
+    if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+      hamburger.classList.remove('active');
+      navMenu.classList.remove('active');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
   });
 }
 
-function toggleMobileMenu() {
-  const isOpen = hamburger.classList.toggle('active');
-  navMenu.classList.toggle('active');
-  hamburger.setAttribute('aria-expanded', isOpen);
-  document.body.style.overflow = isOpen ? 'hidden' : '';
-}
 
-function closeMobileMenu() {
-  hamburger?.classList.remove('active');
-  navMenu?.classList.remove('active');
-  hamburger?.setAttribute('aria-expanded', 'false');
-  document.body.style.overflow = '';
-}
-
-// ==========================================
-// PACKAGE SELECTION
-// ==========================================
 function setupPackageSelection() {
-  if (isMobile) {
-    setupMobilePackageSelection();
-  } else {
-    setupDesktopPackageSelection();
-  }
+  const serviceCards = document.querySelectorAll('.service:not(.add-ons)');
+  const stickyCTA = document.querySelector('.sticky-cta');
+
+  if (!stickyCTA) return;
+
+  serviceCards.forEach(card => {
+    card.addEventListener('click', () => {
+      serviceCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+
+      // Update cart package
+      if (card.classList.contains('basic')) {
+        cart.package = 'basic';
+      } else if (card.classList.contains('complete')) {
+        cart.package = 'complete';
+      } else if (card.classList.contains('luxe')) {
+        cart.package = 'luxe';
+      }
+
+      updateCart();
+
+      // Update visual styling
+      stickyCTA.className = 'sticky-cta';
+      if (card.classList.contains('basic')) {
+        stickyCTA.classList.add('selected-basic');
+      } else if (card.classList.contains('complete')) {
+        stickyCTA.classList.add('selected-complete');
+      } else if (card.classList.contains('luxe')) {
+        stickyCTA.classList.add('selected-luxe');
+      }
+    });
+  });
 }
 
-function setupMobilePackageSelection() {
+
+function setupMobileServiceCards() {
+  const serviceCards = document.querySelectorAll('.service-card');
+
   serviceCards.forEach(card => {
     const header = card.querySelector('.service-header');
     const expandBtn = card.querySelector('.expand-btn');
 
-    if (header && expandBtn) {
-      header.addEventListener('click', (e) => {
-        // Don't expand if clicking info icon
-        if (e.target.closest('.info-icon')) {
-          return;
-        }
-
-        const packageType = card.dataset.package;
-        if (packageType) {
-          handlePackageSelection(card, packageType);
-        }
-
-        // Toggle expansion
-        const wasExpanded = card.classList.contains('expanded');
-
-        // Close all other cards
-        serviceCards.forEach(c => c.classList.remove('expanded'));
-
-        // Toggle this card
-        if (!wasExpanded) {
-          card.classList.add('expanded');
+    const toggleCard = () => {
+      serviceCards.forEach(otherCard => {
+        if (otherCard !== card) {
+          otherCard.classList.remove('expanded');
         }
       });
+
+      card.classList.toggle('expanded');
+    };
+
+    if (header) {
+      header.addEventListener('click', toggleCard);
     }
-  });
-}
 
-function setupDesktopPackageSelection() {
-  packages.forEach(pkg => {
-    pkg.addEventListener('click', () => {
-      const wasSelected = pkg.classList.contains('selected');
-
-      if (wasSelected) {
-        // Deselect
-        pkg.classList.remove('selected');
-        cart.package = null;
-        ctaButton.classList.remove('selected-basic', 'selected-complete', 'selected-luxe');
-
-        // Remove package classes from addons
-        addonItems.forEach(item => {
-          item.classList.remove('package-basic', 'package-complete', 'package-luxe');
-        });
-      } else {
-        // Deselect all packages
-        packages.forEach(p => p.classList.remove('selected'));
-
-        // Select this package
-        pkg.classList.add('selected');
-
-        // Determine package type
-        let packageType = null;
-        if (pkg.classList.contains('basic')) {
-          packageType = 'basic';
-          ctaButton.classList.remove('selected-complete', 'selected-luxe');
-          ctaButton.classList.add('selected-basic');
-        } else if (pkg.classList.contains('complete')) {
-          packageType = 'complete';
-          ctaButton.classList.remove('selected-basic', 'selected-luxe');
-          ctaButton.classList.add('selected-complete');
-        } else if (pkg.classList.contains('luxe')) {
-          packageType = 'luxe';
-          ctaButton.classList.remove('selected-basic', 'selected-complete');
-          ctaButton.classList.add('selected-luxe');
-        }
-
-        cart.package = packageType;
-
-        // Update addon classes
-        addonItems.forEach(item => {
-          item.classList.remove('package-basic', 'package-complete', 'package-luxe');
-          item.classList.add(`package-${packageType}`);
-        });
-      }
-    });
-  });
-}
-
-function handlePackageSelection(card, packageType) {
-  const wasSelected = card.classList.contains('selected');
-
-  // Remove selection from all package cards
-  serviceCards.forEach(c => {
-    if (c.dataset.package) {
-      c.classList.remove('selected');
-    }
-  });
-
-  // Remove package classes from addons
-  addonItems.forEach(item => {
-    item.classList.remove('package-basic', 'package-complete', 'package-luxe');
-  });
-
-  // Remove CTA selection
-  ctaButton.classList.remove('selected-basic', 'selected-complete', 'selected-luxe');
-
-  if (!wasSelected) {
-    // Select this package
-    card.classList.add('selected');
-    cart.package = packageType;
-
-    // Add package class to addons
-    addonItems.forEach(item => {
-      item.classList.add(`package-${packageType}`);
-    });
-
-    // Update CTA button
-    ctaButton.classList.add(`selected-${packageType}`);
-  } else {
-    // Deselect
-    cart.package = null;
-  }
-}
-
-// ==========================================
-// ADDON SELECTION
-// ==========================================
-function setupAddonSelection() {
-  addonItems.forEach(addon => {
-    addon.addEventListener('click', (e) => {
-      // Don't toggle if clicking info icon
-      if (e.target.closest('.info-icon') || e.target.closest('.fa-circle-info')) {
-        return;
-      }
-
-      // Get service name from data attribute
-      let service = addon.dataset.service;
-
-      // If not found in dataset, look for it in the info icon
-      if (!service) {
-        const infoIcon = addon.querySelector('.fa-circle-info');
-        service = infoIcon?.dataset?.service;
-      }
-
-      if (!service) return;
-
-      // Toggle selection
-      addon.classList.toggle('selected');
-
-      // Update cart
-      if (addon.classList.contains('selected')) {
-        cart.addons.add(service);
-      } else {
-        cart.addons.delete(service);
-      }
-    });
-  });
-}
-
-// ==========================================
-// INFO TOOLTIPS
-// ==========================================
-function setupInfoTooltips() {
-  // Info icon/button handlers
-  infoBtns.forEach(icon => {
-    if (isMobile) {
-      // Mobile: click to show
-      icon.addEventListener('click', (e) => {
+    if (expandBtn) {
+      expandBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const service = icon.closest('[data-service]')?.dataset.service ||
-                       icon.dataset.service;
-        if (service) {
-          showTooltip(icon, service);
-        }
+        toggleCard();
       });
-    } else {
-      // Desktop: hover to show
-      icon.addEventListener('mouseenter', (e) => {
-        const service = e.target.dataset.service ||
-                       e.target.closest('[data-service]')?.dataset.service;
-        if (service) {
-          showTooltip(icon, service);
-        }
-      });
-
-      icon.addEventListener('mouseleave', hideTooltip);
     }
   });
+}
 
-  // Close button for mobile
-  if (closeTooltipBtn) {
-    closeTooltipBtn.addEventListener('click', hideTooltip);
+
+function setupMobilePackageSelection() {
+  const packageCards = document.querySelectorAll('.service-card[data-package]');
+  const stickyCTA = document.querySelector('.sticky-cta');
+
+  if (!stickyCTA) return;
+
+  packageCards.forEach(card => {
+    card.addEventListener('click', () => {
+      packageCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+
+      const packageType = card.getAttribute('data-package');
+      cart.package = packageType;
+      updateCart();
+
+      stickyCTA.className = 'sticky-cta';
+      stickyCTA.classList.add(`selected-${packageType}`);
+    });
+  });
+}
+
+
+function setupAddonSelection() {
+  const addonItems = document.querySelectorAll('.addon-item');
+
+  addonItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('info-icon') &&
+          !e.target.closest('.info-icon') &&
+          !e.target.classList.contains('fa-circle-info')) {
+
+        item.classList.toggle('selected');
+
+        const service = item.getAttribute('data-service');
+        if (service) {
+          if (cart.addons.has(service)) {
+            cart.addons.delete(service);
+          } else {
+            cart.addons.add(service);
+          }
+
+          updateCart();
+        }
+      }
+    });
+  });
+}
+
+
+function setupInfoTooltips() {
+  const tooltip = document.getElementById('info-tooltip');
+  if (!tooltip) return;
+
+  const tooltipText = tooltip.querySelector('.tooltip-text');
+  const closeBtn = tooltip.querySelector('.close-tooltip');
+  const infoIcons = document.querySelectorAll('.info-icon, .fa-circle-info[data-service]');
+
+  const tooltipContent = {
+    odor: "Our enzyme-based odor treatment eliminates odor sources rather than masking them. No ozone machines—just powerful enzymatic cleaners that break down smoke, pet, mildew, and other stubborn odors at the molecular level. Works best when paired with deep cleaning. Adds approximately 30-45 minutes to service time.",
+    pet: "Specialized tools designed specifically for pet hair removal without damaging or ripping carpet fibers. We use multiple techniques and brushes to extract embedded pet hair from carpets, upholstery, and hard-to-reach crevices. Safe for all fabric types. Perfect for heavy shedders.",
+    intensive: "Deep-level treatment for the toughest messes—vomit, pet accidents, food spills, gum, candy, or any biohazard situation. Includes aggressive agitation, industrial-strength cleaners (still safe for fabrics), extended dwell time, and repeated extraction passes until the problem is resolved. May add 45-60 minutes depending on severity."
+  };
+
+  infoIcons.forEach(icon => {
+    icon.addEventListener('click', (e) => {
+      e.stopPropagation();
+
+      const service = icon.getAttribute('data-service') ||
+                     icon.closest('.addon-item')?.getAttribute('data-service');
+      const content = tooltipContent[service];
+
+      if (content && tooltipText) {
+        tooltipText.textContent = content;
+
+        if (isMobile) {
+          tooltip.style.top = '50%';
+          tooltip.style.left = '50%';
+          tooltip.style.transform = 'translate(-50%, -50%)';
+        } else {
+          const rect = icon.getBoundingClientRect();
+
+          // Force reflow to get accurate tooltip dimensions
+          tooltip.style.opacity = '0';
+          tooltip.style.display = 'block';
+          const tooltipRect = tooltip.getBoundingClientRect();
+          tooltip.style.display = '';
+          tooltip.style.opacity = '';
+
+          let top = rect.top + window.scrollY - tooltipRect.height - 10;
+          let left = rect.left + window.scrollX + (rect.width / 2) - (tooltipRect.width / 2);
+
+          if (top < window.scrollY) {
+            top = rect.bottom + window.scrollY + 10;
+          }
+
+          if (left < 0) left = 10;
+          if (left + tooltipRect.width > window.innerWidth) {
+            left = window.innerWidth - tooltipRect.width - 10;
+          }
+
+          tooltip.style.top = `${top}px`;
+          tooltip.style.left = `${left}px`;
+          tooltip.style.transform = 'none';
+        }
+
+        tooltip.classList.add('visible');
+      }
+    });
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      tooltip.classList.remove('visible');
+    });
   }
 
-  // Close tooltip when clicking outside
   document.addEventListener('click', (e) => {
-    if (tooltip?.classList.contains('visible') &&
-        !tooltip.contains(e.target) &&
+    if (!tooltip.contains(e.target) &&
+        !e.target.classList.contains('info-icon') &&
         !e.target.closest('.info-icon') &&
-        !e.target.closest('.fa-circle-info')) {
-      hideTooltip();
+        !e.target.classList.contains('fa-circle-info')) {
+      tooltip.classList.remove('visible');
     }
   });
 }
 
-function showTooltip(element, service) {
-  if (!tooltip || !tooltipText) return;
 
-  tooltipText.textContent = tooltipContent[service] || 'Additional service information.';
+function setupFaqToggles() {
+  const faqItems = document.querySelectorAll('.faq-item');
 
-  const rect = element.getBoundingClientRect();
-  const tooltipWidth = 300; // Approximate max width
+  faqItems.forEach(item => {
+    const header = item.querySelector('.faq-question-header');
+    const toggle = item.querySelector('.faq-toggle');
 
-  // Position tooltip
-  let left = rect.left + (rect.width / 2);
-  let top = rect.bottom + 8;
+    const toggleFaq = () => {
+      const wasActive = item.classList.contains('active');
 
-  // Keep tooltip on screen
-  if (left + tooltipWidth / 2 > window.innerWidth) {
-    left = window.innerWidth - tooltipWidth / 2 - 16;
-  }
-  if (left - tooltipWidth / 2 < 0) {
-    left = tooltipWidth / 2 + 16;
-  }
+      faqItems.forEach(otherItem => {
+        if (otherItem !== item) {
+          otherItem.classList.remove('active');
+        }
+      });
 
-  tooltip.style.left = `${left}px`;
-  tooltip.style.top = `${top}px`;
-  tooltip.style.transform = 'translateX(-50%)';
+      item.classList.toggle('active');
+      toggle.setAttribute('aria-expanded', !wasActive);
+    };
 
-  tooltip.classList.add('visible');
+    header.addEventListener('click', toggleFaq);
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFaq();
+    });
+  });
 }
 
-function hideTooltip() {
-  if (tooltip) {
-    tooltip.classList.remove('visible');
-  }
-}
 
-// ==========================================
-// CAROUSEL
-// ==========================================
 function startCarousel() {
+  const carouselTrack = document.getElementById('carousel-track');
   if (!carouselTrack) return;
 
   const speed = isMobile ? 50 : 120; // pixels per second
@@ -460,37 +469,19 @@ function startCarousel() {
   requestAnimationFrame(step);
 }
 
-// ==========================================
-// CHECKOUT / CTA
-// ==========================================
-function checkout() {
-  const redirectMap = {
-    default: 'https://form.jotform.com/ventureinvictus/detail-intake-form',
-    basic: 'https://form.jotform.com/252885754777175/prefill/6907e43a6630306492fa85154c7b',
-    complete: 'https://form.jotform.com/252885754777175/prefill/6907e504663030691fb23fb27c1a',
-    luxe: 'https://form.jotform.com/252885754777175/prefill/6907e523616339f110ed07a8ef0a'
-  };
 
-  let target = redirectMap.default;
+function setupStickyCTA() {
+  const stickyCTA = document.querySelector('.sticky-cta');
 
-  if (cart.package) {
-    target = redirectMap[cart.package];
-  }
+  if (!stickyCTA) return;
 
-  // Future: handle addon selections in URL params if needed
-  // const addonParams = Array.from(cart.addons).join(',');
-
-  window.location.href = target;
+  stickyCTA.addEventListener('click', () => {
+    const link = getCheckoutLink();
+    window.open(link, '_blank');
+  });
 }
 
-// Attach checkout to CTA button
-if (ctaButton) {
-  ctaButton.addEventListener('click', checkout);
-}
 
-// ==========================================
-// EXIT INTENT MODAL (Desktop Only)
-// ==========================================
 function activateExitIntent(modalSelector) {
   if (isMobile) return; // Don't run on mobile
 
@@ -562,8 +553,7 @@ function activateExitIntent(modalSelector) {
   // CTA button
   if (ctaBtn) {
     ctaBtn.addEventListener('click', () => {
-      hideModal();
-      checkout();
+      window.location.href = getCheckoutLink();
     });
   }
 

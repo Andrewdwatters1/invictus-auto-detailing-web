@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
-
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +11,8 @@
   <meta name="keywords" content="mobile auto detailing Colorado Springs, interior car detailing, car stain removal, pet hair removal, odor treatment">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://www.invictusautodetailing.com">
-  <link rel="icon" type="image/x-icon" href="images/favicon.png">
+  <link rel="icon" type="image/x-icon" href="images/favicon.png" alt="Car with key icon">
+
 
   <!-- Google ownership verification (already working) -->
   <meta name="google-site-verification" content="4LCgupZzOQfFeI7I0WeJIoexMJqIr2lfo67OQ041thc">
@@ -65,6 +63,95 @@
     }
   </script>
 
+  <!-- Review Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Invictus Auto Detailing",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "reviewCount": "2"
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "author": {
+          "@type": "Person",
+          "name": "Philip D."
+        },
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5"
+        },
+        "reviewBody": "Outstanding. My pickup was in worse shape than I thought, and I wasn't charged any extra for the extra time it took to get clean. It was all done in my driveway with his materials and tools; I only provided a little electricity. Highly recommended."
+      },
+      {
+        "@type": "Review",
+        "author": {
+          "@type": "Person",
+          "name": "Linda C."
+        },
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5"
+        },
+        "reviewBody": "Andrew did an amazing job. The Subaru in his pictures was my car!!! He was on time, very courteous and worked nonstop. I am so happy with the results and would absolutely recommend him and will definitely use him again!"
+      }
+    ]
+  }
+  </script>
+
+  <!-- FAQ Schema Markup -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+          "@type": "Question",
+          "name": "What areas do you serve in Colorado Springs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We provide mobile interior detailing throughout Colorado Springs and surrounding areas within 30 miles of downtown, including Broadmoor, Stratmoor Hills, Southeast Colorado Springs, East Colorado Springs, Briargate, Northgate, Monument, Black Forest, Fountain, and Security-Widefield. Custom pricing applies for areas beyond 30 miles."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does an interior detail take?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our Basic package takes approximately 2 hours, Complete package around 3 hours, and Luxe package 4-5 hours. Times may vary by 30 minutes depending on vehicle size and condition. Add-on services may extend the time needed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to be present during the detail?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, you can leave during the service. Just provide your keys and access to a power outlet within 100 feet of your vehicle. We'll do a walkthrough together when the job is complete."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What do I need to provide?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You only need to provide access to a standard power outlet within 100 feet of your vehicle. We bring all equipment, supplies, and cleaning products. Please remove valuables, personal items, and anything you don't want moved before we arrive."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What payment methods do you accept?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We accept cash, all major credit cards, Venmo, and Zelle. Payment is due upon completion of service. We offer 10% discounts for military, first responders, and seniors 65+ with valid ID."
+          }
+        }
+      ]
+    }
+  </script>
+
   <!-- Critical device detection script – must run before CSS to prevent FOUC -->
   <script>
     (function() {
@@ -101,16 +188,15 @@
   </script>
 </head>
 
-
-
-
-
-
-
-
-
-
 <body>
+
+  <!-- Call Now Button - Mobile Only (above header) -->
+  <div class="call-bar mobile-only">
+    <a href="tel:+17194313749" class="call-now-btn" aria-label="Call Invictus Auto Detailing now">
+      <i class="fas fa-phone-alt"></i>
+      <span>(719) 431-3749</span>
+    </a>
+  </div>
 
   <header>
     <h1>Invictus Auto Detailing</h1>
@@ -122,8 +208,14 @@
     </button>
     <nav class="nav-menu">
       <a href="#services" class="scroller">Services</a>
+      <a href="#about" class="scroller">About</a>
       <a href="#gallery" class="scroller">Results</a>
       <a href="#social" class="scroller">Social</a>
+      <!-- Call Now Button - Desktop Only (in nav) -->
+      <a href="tel:+17194313749" class="nav-call-btn desktop-only" aria-label="Call Invictus Auto Detailing now">
+        <i class="fas fa-phone-alt"></i>
+        <span>(719) 431-3749</span>
+      </a>
     </nav>
   </header>
 
@@ -132,6 +224,34 @@
     <p>Invictus Auto Detailing is a Veteran-owned mobile detailing service that brings showroom-level care straight to your driveway. Based in Colorado Springs, we deliver precision, reliability, and results that speak for themselves.</p>
     <p>Because your car deserves professional attention, not just a quick wash.</p>
   </div>
+
+  <!-- Reviews Section -->
+  <section id="reviews" class="section-box reviews-section desktop-only">
+    <h2>What Colorado Springs Customers Say</h2>
+
+    <div class="reviews-container">
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">★★★★★</div>
+          <i class="fab fa-yelp review-source-icon yelp-icon"></i>
+        </div>
+        <p class="review-text">"Outstanding. My pickup was in worse shape than I thought, and I wasn't charged any extra for the extra time it took to get clean. It was all done in my driveway with his materials and tools; I only provided a little electricity. Highly recommended."</p>
+        <p class="reviewer-name">— Philip D., Broadmoor</p>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">★★★★★</div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="review-source-icon nextdoor-icon">
+            <path fill="#8DD500" d="M24 4L12 16v16l12 12 12-12V16L24 4zm0 3.5L34.5 18v13L24 41.5 13.5 31V18L24 7.5z"/>
+            <path fill="#8DD500" d="M24 12c-4.4 0-8 3.6-8 8v4h3v-4c0-2.8 2.2-5 5-5s5 2.2 5 5v4h3v-4c0-4.4-3.6-8-8-8z"/>
+          </svg>
+        </div>
+        <p class="review-text">"Andrew did an amazing job. The Subaru in his pictures was my car!!! He was on time, very courteous and worked nonstop. I am so happy with the results and would absolutely recommend him and will definitely use him again!"</p>
+        <p class="reviewer-name">— Linda C., Chamberlin</p>
+      </div>
+    </div>
+  </section>
 
   <!-- SERVICES SECTION - MOBILE -->
   <div id="services">
@@ -315,20 +435,21 @@
         <div class="service-description addons-list">
           <div class="addon-row-3">
             <div class="addon-item" data-service="odor">
-              <span>Deep Odor Treatment – <strong>60</strong></span>
+              <span>Deep Odor Treatment – <strong>$60</strong></span>
               <i class="fa-solid fa-circle-info" data-service="odor"></i>
             </div>
             <div class="addon-item" data-service="pet">
-              <span>Pet Hair Treatment – <strong>40</strong></span>
+              <span>Pet Hair Treatment – <strong>$40</strong></span>
               <i class="fa-solid fa-circle-info" data-service="pet"></i>
             </div>
             <div class="addon-item" data-service="intensive">
-              <span>Intensive Care - <strong>50</strong></span>
+              <span>Intensive Care – <strong>$50</strong></span>
               <i class="fa-solid fa-circle-info" data-service="intensive"></i>
             </div>
           </div>
         </div>
       </div>
+
     </div>
 
   </div>
@@ -339,52 +460,198 @@
     <p class="tooltip-text"></p>
   </div>
 
+  <!-- About Section -->
+  <section id="about" class="section-box about-section">
+    <h2>About Us</h2>
+
+    <div class="about-container">
+      <!-- Why Choose Mobile -->
+      <div class="about-subsection">
+        <h3>Why Choose Mobile Detailing?</h3>
+        <p>Skip the drop-off hassle. We bring professional equipment directly to your driveway, office, or apartment complex in Colorado Springs. You save time, avoid coordinating rides, and get showroom results without leaving home. Schedule around
+          your life while we handle the detail work.</p>
+      </div>
+
+      <!-- Process -->
+      <div class="about-subsection">
+        <h3>Our Detailing Process</h3>
+        <p><strong>Booking:</strong> Call (719) 431-3749 or book online. We prefer 24 hours notice but often accommodate same-day requests.</p>
+        <p><strong>What You Provide:</strong> Access to a power outlet within 100 feet of your vehicle. Remove valuables before we arrive. You can leave during service—just provide keys.</p>
+        <p><strong>The Detail:</strong> Heavy-duty vacuum, targeted cleaning by package level, specialized pet hair removal tools, enzyme-based odor treatments, and brand-name products (Dawn, Resolve, no harsh chemicals). Times: Basic ~2hrs, Complete
+          ~3hrs, Luxe 4-5hrs.</p>
+      </div>
+
+      <!-- Service Area -->
+      <div class="about-subsection">
+        <h3>Colorado Springs Service Area</h3>
+        <p>We serve Colorado Springs and surrounding areas within 30 miles of downtown, including Broadmoor, Stratmoor Hills, Southeast/East Colorado Springs, Briargate, Northgate, Monument, Black Forest, Fountain, and Security-Widefield. Custom
+          pricing for areas beyond 30 miles. We detail at residential, apartment, and office locations.</p>
+      </div>
+
+      <!-- Veteran Story -->
+      <div class="about-subsection">
+        <h3>Veteran-Owned & Operated</h3>
+        <p>Invictus Auto Detailing is owned by an Army veteran (Captain, Field Artillery, 8 years service) with deployments to CENTCOM and EURCOM, honorably discharged with a Bronze Star. Military discipline translates to precision
+          detailing—attention to detail, commitment to excellence, no shortcuts.</p>
+        <p><strong>Our Guarantee:</strong> Unsatisfied with any aspect? We'll make it right at no charge. Military, first responders, and seniors 65+ receive 10% off with valid ID.</p>
+        <p class="character-reference"><em>"I wholeheartedly recommend Andrew Watters. Since 2016, Andrew and I have had the privilege of serving together in the Colorado Army National Guard. He demonstrates all the qualities required of an officer in the United States Army and is a superb leader. Not only is his integrity and commitment to his organization evidence of his attention to detail and desire to serve, but he also demonstrates the technical abilities and critical thinking skills necessary to succeed in any capacity he sets his sights on."</em> — Casey S., Colorado Army National Guard</p>
+
+      </div>
+    </div>
+  </section>
+
   <!-- Gallery -->
-  <section id="gallery" class="section-box">
+  <section id="gallery" class="section-box gallery-section">
     <h2>Recent Results</h2>
     <div class="carousel-container">
       <div class="carousel-track" id="carousel-track">
         <div class="carousel-item">
           <picture>
             <source srcset="./images/1-slide.webp" type="image/webp">
-            <img src="./images/1-slide.jpg" alt="Before and after interior detailing – heavy pet hair removed" class="carousel-image" fetchpriority="high">
+            <img src="./images/1-slide.jpg" alt="Before and after pet hair removal from car seats - mobile interior detailing Colorado Springs by Invictus Auto Detailing" class="carousel-image" fetchpriority="high">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
             <source srcset="./images/3-slide.webp" type="image/webp">
-            <img src="./images/3-slide.jpg" alt="Deep stain removal from light cloth seats" class="carousel-image" loading="lazy">
+            <img src="./images/3-slide.jpg" alt="Deep stain removal from light cloth car seats - professional interior car detailing Colorado Springs" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
             <source srcset="./images/4-slide.webp" type="image/webp">
-            <img src="./images/4-slide.jpg" alt="Leather cleaning and conditioning results" class="carousel-image" loading="lazy">
+            <img src="./images/4-slide.jpg" alt="Leather seat cleaning and conditioning results - luxury auto detailing Colorado Springs" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
             <source srcset="./images/5-slide.webp" type="image/webp">
-            <img src="./images/5-slide.jpg" alt="Carpet shampoo and extraction – coffee spill gone" class="carousel-image" loading="lazy">
+            <img src="./images/5-slide.jpg" alt="Carpet shampoo and extraction removing coffee stains - mobile car cleaning Colorado Springs CO" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
             <source srcset="./images/6-slide.webp" type="image/webp">
-            <img src="./images/6-slide.jpg" alt="Odor elimination treatment – smoker vehicle" class="carousel-image" loading="lazy">
+            <img src="./images/6-slide.jpg" alt="Smoke odor elimination and deep cleaning for smoker vehicle - car odor removal Colorado Springs" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
             <source srcset="./images/7-slide.webp" type="image/webp">
-            <img src="./images/7-slide.jpg" alt="Headliner spot cleaning results" class="carousel-image" loading="lazy">
+            <img src="./images/7-slide.jpg" alt="Headliner spot cleaning and stain treatment - complete interior detailing Colorado Springs" class="carousel-image" loading="lazy">
           </picture>
         </div>
         <div class="carousel-item">
           <picture>
             <source srcset="./images/8-slide.webp" type="image/webp">
-            <img src="./images/8-slide.jpg" alt="Full interior transformation – family SUV" class="carousel-image" loading="lazy">
+            <img src="./images/8-slide.jpg" alt="Full interior transformation of family SUV - best mobile auto detailing Colorado Springs" class="carousel-image" loading="lazy">
           </picture>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="section-box faq-section">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-container">
+      <div class="faq-item">
+        <div class="faq-question-header">
+          <h3 class="faq-question">What areas do you serve in Colorado Springs?</h3>
+          <button class="faq-toggle" aria-label="Toggle answer">
+            <span class="faq-chevron"></span>
+          </button>
+        </div>
+        <div class="faq-answer">
+          <p>We provide mobile interior detailing throughout Colorado Springs and surrounding areas within 30 miles of downtown, including Broadmoor, Stratmoor Hills, Southeast Colorado Springs, East Colorado Springs, Briargate, Northgate, Monument,
+            Black Forest, Fountain, and Security-Widefield. Custom pricing applies for areas beyond 30 miles.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question-header">
+          <h3 class="faq-question">How long does an interior detail take?</h3>
+          <button class="faq-toggle" aria-label="Toggle answer">
+            <span class="faq-chevron"></span>
+          </button>
+        </div>
+        <div class="faq-answer">
+          <p>Our Basic package takes approximately 2 hours, Complete package around 3 hours, and Luxe package 4-5 hours. Times may vary by 30 minutes depending on vehicle size and condition. Add-on services may extend the time needed.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question-header">
+          <h3 class="faq-question">Do I need to be present during the detail?</h3>
+          <button class="faq-toggle" aria-label="Toggle answer">
+            <span class="faq-chevron"></span>
+          </button>
+        </div>
+        <div class="faq-answer">
+          <p>No, you can leave during the service. Just provide your keys and access to a power outlet within 100 feet of your vehicle. We'll do a walkthrough together when the job is complete.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question-header">
+          <h3 class="faq-question">What do I need to provide?</h3>
+          <button class="faq-toggle" aria-label="Toggle answer">
+            <span class="faq-chevron"></span>
+          </button>
+        </div>
+        <div class="faq-answer">
+          <p>You only need to provide access to a standard power outlet within 100 feet of your vehicle. We bring all equipment, supplies, and cleaning products. Please remove valuables, personal items, and anything you don't want moved before we
+            arrive.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question-header">
+          <h3 class="faq-question">What payment methods do you accept?</h3>
+          <button class="faq-toggle" aria-label="Toggle answer">
+            <span class="faq-chevron"></span>
+          </button>
+        </div>
+        <div class="faq-answer">
+          <p>We accept cash, all major credit cards, Venmo, and Zelle. Payment is due upon completion of service. We offer 10% discounts for military, first responders, and seniors 65+ with valid ID.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question-header">
+          <h3 class="faq-question">Can you remove pet hair and odors?</h3>
+          <button class="faq-toggle" aria-label="Toggle answer">
+            <span class="faq-chevron"></span>
+          </button>
+        </div>
+        <div class="faq-answer">
+          <p>Absolutely! We use specialized tools designed specifically for pet hair removal without damaging carpet fibers. For odors, we use enzyme-based treatments that eliminate sources rather than just masking smells. Our Deep Odor Treatment
+            add-on can handle even the toughest smoke, pet, and mildew odors.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question-header">
+          <h3 class="faq-question">How far in advance should I book?</h3>
+          <button class="faq-toggle" aria-label="Toggle answer">
+            <span class="faq-chevron"></span>
+          </button>
+        </div>
+        <div class="faq-answer">
+          <p>We prefer 24 hours notice, but we can often accommodate same-day requests. A rush fee may apply for last-minute bookings. Call (719) 431-3749 to check availability.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question-header">
+          <h3 class="faq-question">What about large vehicles like SUVs and trucks?</h3>
+          <button class="faq-toggle" aria-label="Toggle answer">
+            <span class="faq-chevron"></span>
+          </button>
+        </div>
+        <div class="faq-answer">
+          <p>We detail all vehicle sizes. Large vehicles (SUVs, 3-row vehicles) have a $25 surcharge. Vehicles with 4+ rows require custom pricing. All our packages and add-ons are available regardless of vehicle size.</p>
         </div>
       </div>
     </div>
@@ -399,7 +666,7 @@
       <button class="exit-modal-close" aria-label="Close modal">&times;</button>
       <div class="exit-modal-body">
         <h3>Wait! Not sure which package is right?</h3>
-        <p class="exit-modal-text">Let's schedule a free estimate and we'll recommend the perfect detail for your vehicle. <br> No obligation.</p>
+        <p class="exit-modal-text">Let's schedule a free estimate and we'll recommend the perfect detail for your vehicle.</p>
         <button class="exit-modal-cta">Yes, that sounds better</button>
         <button class="exit-modal-decline">
           No thanks
